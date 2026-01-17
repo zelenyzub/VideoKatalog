@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using VideoKlub.Models;
 
 namespace VideoKlub.Data
 {
@@ -9,5 +10,7 @@ namespace VideoKlub.Data
             : base(options)
         {
         }
+
+        public DbSet<Video> Videos { get; set; }
     }
 }
