@@ -5,6 +5,7 @@ using VideoKlub.Models;
 
 namespace VideoKlub.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -14,7 +15,6 @@ namespace VideoKlub.Controllers
             _logger = logger;
         }
 
-        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             return View();
