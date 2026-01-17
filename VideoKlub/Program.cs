@@ -10,7 +10,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true) //config email confirmation true/false
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -34,12 +35,70 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+
+//SEEDING ADMIN and USER ROLES
+using(var scope = app.Services.CreateScope())
+{
+    //ADMIN & USER ROLES SEEED
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var roles = new[] { "Admin", "User" };
+
+    foreach(var role in roles)
+    {
+        if(!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+}
+
+//SEEDING USERS WITH ADMIN & USER ROLE
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+    // ----- ADMIN -----
+    string adminEmail = "admin@gmail.com";
+    string adminPassword = "Admin123!";
+
+    if (await userManager.FindByEmailAsync(adminEmail) == null)
+    {
+        var adminUser = new IdentityUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true
+        };
+
+        await userManager.CreateAsync(adminUser, adminPassword);
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+
+    // ----- REGULAR USER -----
+    string userEmail = "user@gmail.com";
+    string userPassword = "User123!";
+
+    if (await userManager.FindByEmailAsync(userEmail) == null)
+    {
+        var regularUser = new IdentityUser
+        {
+            UserName = userEmail,
+            Email = userEmail,
+            EmailConfirmed = true
+        };
+
+        await userManager.CreateAsync(regularUser, userPassword);
+        await userManager.AddToRoleAsync(regularUser, "User");
+    }
+}
+
 
 app.Run();
