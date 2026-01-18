@@ -21,8 +21,8 @@ namespace VideoKlub.Models
 
         [ForeignKey(nameof(CategoryId))]
         public Category Category { get; set; }
-        
 
+        public bool IsActive { get; set; } = true;
 
     }
 }

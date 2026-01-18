@@ -22,6 +22,7 @@ namespace VideoKlub.Repositories.Implementation
         {
             return await _context.Videos
                 .Include(v => v.Category)
+                .Where(v => v.IsActive)
                 .ToListAsync();
         }
 
@@ -36,7 +37,7 @@ namespace VideoKlub.Repositories.Implementation
         {
             return await _context.Videos
                 .Include(v => v.Category)
-                .Where(v => v.Title.Contains(query) || v.Description.Contains(query))
+                .Where(v => v.IsActive && (v.Title.Contains(query) || v.Description.Contains(query)))
                 .ToListAsync();
         }
 
@@ -44,7 +45,7 @@ namespace VideoKlub.Repositories.Implementation
         {
             return await _context.Videos
                 .Include(v => v.Category)
-                .Where(v => categoryIds.Contains(v.CategoryId))
+                .Where(v => v.IsActive && categoryIds.Contains(v.CategoryId))
                 .ToListAsync();
         }
     }
