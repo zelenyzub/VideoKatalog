@@ -15,8 +15,20 @@ namespace VideoKlub.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var videos = await _videoRepository.GetAllAsync();
+            var videos = await _videoRepository.GetAllWithCategoryAsync();
             return View(videos);
+        }
+
+        public async Task<IActionResult> Search(string query)
+        {
+            if (string.IsNullOrEmpty(query))
+            {
+                return RedirectToAction("Index");
+            }
+
+            var videos = await _videoRepository.SearchByTitleOrDescriptionAsync(query);
+            ViewData["SearchQuery"] = query;
+            return View("Index", videos);
         }
     }
 }

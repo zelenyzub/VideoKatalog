@@ -12,5 +12,6 @@ namespace VideoKlub.Data
         }
 
         public DbSet<Video> Videos { get; set; }
+        public DbSet<Category> Categories { get; set; }
     }
 }

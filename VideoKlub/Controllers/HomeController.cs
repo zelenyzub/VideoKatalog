@@ -17,12 +17,12 @@ namespace VideoKlub.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Video");
         }
 
         public IActionResult Privacy()
         {
-            return View();
+            return RedirectToAction("Index", "Video");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

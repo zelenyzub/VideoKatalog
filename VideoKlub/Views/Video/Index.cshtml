@@ -1,6 +1,120 @@
-﻿@model List<VideoKlub.Models.Video>
+﻿@model IEnumerable<VideoKlub.Models.Video>
 
-@foreach(var v in Model)
+@if (ViewData["SearchQuery"] != null)
 {
-	<p>@v.Title</p>
+    @if (!Model.Any())
+    {
+        <div class="mb-8">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-0">Nema rezultata za: <span class="text-primary">"@ViewData["SearchQuery"]"</span></h3>
+                    <p class="text-muted fs-6 mt-2">Pokušajte sa drugačijim ključnom rečju ili pregledajte sve dostupne sadržaje</p>
+                </div>
+                <div>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-light-primary btn-sm">
+                        <i class="ki-outline ki-arrow-left"></i>
+                        Svi sadržaji
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="mb-8">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-0">Rezultati pretrage za: <span class="text-primary">"@ViewData["SearchQuery"]"</span></h3>
+                    <p class="text-muted fs-6 mt-2">Pronađeno je <span class="fw-bold text-primary">@Model.Count()</span> rezultata koji odgovaraju vašoj pretrazi</p>
+                </div>
+                <div>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-light-primary btn-sm">
+                        <i class="ki-outline ki-arrow-left"></i>
+                        Nazad na početak
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-6">
+            @foreach (var v in Model)
+            {
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6">
+                    <div class="card card-flush h-100 video-card hover-scale cursor-pointer">
+
+                        <!-- Thumbnail -->
+                        <div class="card-body p-0">
+                            <div class="overlay-wrapper">
+                                <img src="~/@v.ImagePath"
+                                     class="w-100 rounded"
+                                     style="height:260px; object-fit:cover;" />
+                            </div>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="card-footer px-3 py-2">
+                            <div class="fw-bold text-gray-900 text-truncate">
+                                @v.Title
+                            </div>
+                            <div class="text-muted fs-7">
+                                @v.Category.Name
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    }
 }
+else
+{
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            Trenutno nema dostupnih video sadržaja.
+        </div>
+    }
+    else
+    {
+        <div class="mb-8">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-0">Pronađite svoj omiljeni video sadržaj</h3>
+                    <p class="text-muted fs-6 mt-2">Dostupno je <span class="fw-bold text-primary">@Model.Count()</span> video sadržaja</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-6">
+            @foreach (var v in Model)
+            {
+                <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6">
+                    <div class="card card-flush h-100 video-card hover-scale cursor-pointer">
+
+                        <!-- Thumbnail -->
+                        <div class="card-body p-0">
+                            <div class="overlay-wrapper">
+                                <img src="~/@v.ImagePath"
+                                     class="w-100 rounded"
+                                     style="height:260px; object-fit:cover;" />
+                            </div>
+                        </div>
+
+                        <!-- Info -->
+                        <div class="card-footer px-3 py-2">
+                            <div class="fw-bold text-gray-900 text-truncate">
+                                @v.Title
+                            </div>
+                            <div class="text-muted fs-7">
+                                @v.Category.Name
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
+

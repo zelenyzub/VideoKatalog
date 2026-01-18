@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VideoKlub.Models
 {
@@ -10,10 +11,17 @@ namespace VideoKlub.Models
 
         public string Description { get; set; }
 
-        //trebace kategorija naknadno
-
         public string Duration { get; set; }
         public string URL { get; set; }
+
+        public string ImagePath { get; set; }
+
+        [Required]
+        public int CategoryId { get; set; }
+
+        [ForeignKey(nameof(CategoryId))]
+        public Category Category { get; set; }
+        
 
 
     }
