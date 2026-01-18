@@ -39,5 +39,13 @@ namespace VideoKlub.Repositories.Implementation
                 .Where(v => v.Title.Contains(query) || v.Description.Contains(query))
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Video>> GetByCategoryAsync(int[] categoryIds)
+        {
+            return await _context.Videos
+                .Include(v => v.Category)
+                .Where(v => categoryIds.Contains(v.CategoryId))
+                .ToListAsync();
+        }
     }
 }

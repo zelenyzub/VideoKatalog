@@ -30,5 +30,19 @@ namespace VideoKlub.Controllers
             ViewData["SearchQuery"] = query;
             return View("Index", videos);
         }
+
+        public async Task<IActionResult> FilterByCategory(int[] categoryIds)
+        {
+            if(categoryIds == null || categoryIds.Length == 0)
+            {
+                return RedirectToAction("Index");
+            }
+            var videos = await _videoRepository.GetByCategoryAsync(categoryIds);
+
+            ViewData["FilterActive"] = true;
+            ViewData["SelectedCategories"] = categoryIds;
+
+            return View("Index", videos);
+        }
     }
 }
