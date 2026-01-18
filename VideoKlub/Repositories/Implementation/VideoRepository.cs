@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VideoKlub.Data;
 using VideoKlub.Models;
 using VideoKlub.Repositories.Interfaces;

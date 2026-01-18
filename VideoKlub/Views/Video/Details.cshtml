@@ -1,0 +1,58 @@
+﻿<div class="container mt-5">
+    <div class="row">
+        <!-- Poster -->
+        <div class="col-lg-4 col-md-5 mb-4">
+            <div class="card shadow-sm">
+                <img src="~/@Model.ImagePath" class="card-img-top rounded" style="height: 400px; object-fit: cover;" alt="@Model.Title" />
+                <div class="card-body text-center">
+                    <button class="btn btn-primary w-100 mb-2">
+                        <i class="ki-outline ki-plus-circle fs-2x"></i> Dodaj u omiljenje
+                    </button>
+                    <button class="btn btn-dark w-100">
+                        <i class="ki-outline ki-star text-warning fs-2x"></i> Oceni
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Info -->
+        <div class="col-lg-8 col-md-7">
+            <h1 class="fw-bold">@Model.Title</h1>
+            <h5 class="text-muted mb-3">@Model.Duration</h5>
+
+            @* Description *@
+            <div class="mb-3">
+                <div class="text-gray-900">@Model.Description</div>
+            </div>
+
+            <!-- Category -->
+            <div class="mb-3">
+                <span class="badge badge-light-info badge-lg">@Model.Category.Name</span>
+            </div>
+
+
+            <!-- TrailerURL -->
+            <div class="mb-3">
+                <a href="@Model.URL" class="btn btn-light-primary">
+                    <i class="ki-outline ki-to-right fs-2x"></i>Pogledaj najavu
+                </a>
+            </div>
+
+            <!-- Ratings / Popularity -->
+            <div class="d-flex align-items-center gap-3">
+                <div>
+                    <i class="ki-solid ki-star text-warning fs-3"></i>
+                    <strong>7.5/10</strong>VK
+                </div>
+                <div>
+                    <i class="ki-solid ki-heart text-danger fs-3"></i>
+                    <strong>147</strong>VK
+                </div>
+                <div>
+                    <i class="ki-solid ki-people text-primary fs-3"></i>
+                    <strong>221</strong>VK
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

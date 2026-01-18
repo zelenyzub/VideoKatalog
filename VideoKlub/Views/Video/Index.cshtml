@@ -128,7 +128,7 @@ else
 
                                 <div class="mb-3">
                                     <select name="categoryIds"
-                                            class="form-select form-select-solid form-select-sm"
+                                            class="form-select form-select-solid form-select-sm cursor-pointer"
                                             multiple
                                             data-control="select2"
                                             data-placeholder="Izaberite kategorije">
@@ -168,23 +168,25 @@ else
             @foreach (var v in Model)
             {
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6">
-                    <div class="card card-flush h-100 video-card hover-scale cursor-pointer shadow-sm">
-                        <div class="card-body p-0">
-                            <div class="overlay-wrapper">
-                                <img src="~/@v.ImagePath"
-                                     class="w-100 rounded"
-                                     style="height:260px; object-fit:cover;" />
+                    <a asp-controller="Video" asp-action="Details" asp-route-id="@v.Id" class="text-decoration-none">
+                        <div class="card card-flush h-100 video-card hover-scale cursor-pointer shadow-sm">
+                            <div class="card-body p-0">
+                                <div class="overlay-wrapper">
+                                    <img src="~/@v.ImagePath"
+                                         class="w-100 rounded"
+                                         style="height:260px; object-fit:cover;" />
+                                </div>
+                            </div>
+                            <div class="card-footer px-3 py-2">
+                                <div class="fw-bold text-gray-900 text-truncate">
+                                    @v.Title
+                                </div>
+                                <div class="text-muted fs-7">
+                                    @v.Category.Name
+                                </div>
                             </div>
                         </div>
-                        <div class="card-footer px-3 py-2">
-                            <div class="fw-bold text-gray-900 text-truncate">
-                                @v.Title
-                            </div>
-                            <div class="text-muted fs-7">
-                                @v.Category.Name
-                            </div>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             }
         </div>

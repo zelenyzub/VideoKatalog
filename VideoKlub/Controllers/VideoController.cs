@@ -44,5 +44,15 @@ namespace VideoKlub.Controllers
 
             return View("Index", videos);
         }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var video = await _videoRepository.GetByIdWithCategoryAsync(id);
+            if(video == null)
+            {
+                return NotFound();
+            }
+            return View(video);
+        }
     }
 }
