@@ -22,6 +22,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 //category repository
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+//rate repository
+builder.Services.AddScoped<IRateRepository, RateRepository>();
 
 var app = builder.Build();
 

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using VideoKlub.Repositories.Interfaces;
+using VideoKlub.Models;
+using System.Security.Claims;
 
 namespace VideoKlub.Controllers
 {
@@ -8,10 +10,12 @@ namespace VideoKlub.Controllers
     public class VideoController : Controller
     {
         private readonly IVideoRepository _videoRepository;
+        private readonly IRateRepository _rateRepository;
 
-        public VideoController(IVideoRepository videoRepository)
+        public VideoController(IVideoRepository videoRepository, IRateRepository rateRepository)
         {
             _videoRepository = videoRepository;
+            _rateRepository = rateRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -48,11 +52,47 @@ namespace VideoKlub.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var video = await _videoRepository.GetByIdWithCategoryAsync(id);
+            var avgRating = await _rateRepository.GetAverageRatingAsync(id);
             if(video == null)
             {
                 return NotFound();
             }
+
+            ViewBag.AverageRating = avgRating;
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userRate = await _rateRepository.GetUserRatingForVideoAsync(userId, id);
+            ViewBag.UserHasRated = userRate != null;
             return View(video);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RateVideo(int videoId, int value)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var existingRate = await _rateRepository.GetUserRatingForVideoAsync(userId, videoId);
+            if(existingRate != null)
+            {
+                existingRate.Value = value;
+                existingRate.Timestamp = DateTime.UtcNow;
+            }
+            else
+            {
+                var rate = new Rate
+                {
+                    VideoId = videoId,
+                    UserId = userId,
+                    Value = value
+                };
+
+                await _rateRepository.AddAsync(rate);
+                await _rateRepository.SaveAsync();
+
+            }
+            return RedirectToAction("Details", new { id = videoId });
+
         }
     }
 }

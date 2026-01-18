@@ -1,4 +1,68 @@
 ﻿<div class="container mt-5">
+    @* MODAL OCENI SADRŽAJ *@
+    <div class="modal fade" id="rateVideoModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title">Oceni video: @Model.Title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <form method="post" asp-action="RateVideo" asp-controller="Video">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="videoId" value="@Model.Id" />
+                        <div class="rating">
+                            <!-- Reset -->
+                            <label class="btn btn-light fw-bold btn-sm rating-label me-3" for="kt_rating_input_0">
+                                Reset
+                            </label>
+                            <input class="rating-input" name="value" value="0" checked type="radio" id="kt_rating_input_0" />
+
+                            <!-- Star 1 -->
+                            <label class="rating-label" for="kt_rating_input_1">
+                                <i class="ki-duotone ki-star fs-1"></i>
+                            </label>
+                            <input class="rating-input" name="value" value="1" type="radio" id="kt_rating_input_1" />
+
+                            <!-- Star 2 -->
+                            <label class="rating-label" for="kt_rating_input_2">
+                                <i class="ki-duotone ki-star fs-1"></i>
+                            </label>
+                            <input class="rating-input" name="value" value="2" type="radio" id="kt_rating_input_2" />
+
+                            <!-- Star 3 -->
+                            <label class="rating-label" for="kt_rating_input_3">
+                                <i class="ki-duotone ki-star fs-1"></i>
+                            </label>
+                            <input class="rating-input" name="value" value="3" type="radio" id="kt_rating_input_3" />
+
+                            <!-- Star 4 -->
+                            <label class="rating-label" for="kt_rating_input_4">
+                                <i class="ki-duotone ki-star fs-1"></i>
+                            </label>
+                            <input class="rating-input" name="value" value="4" type="radio" id="kt_rating_input_4" />
+
+                            <!-- Star 5 -->
+                            <label class="rating-label" for="kt_rating_input_5">
+                                <i class="ki-duotone ki-star fs-1"></i>
+                            </label>
+                            <input class="rating-input" name="value" value="5" type="radio" id="kt_rating_input_5" />
+                        </div>
+
+                        <!-- Modal Footer -->
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Odustani</button>
+                            <button type="submit" class="btn btn-primary">Oceni</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <!-- Poster -->
         <div class="col-lg-4 col-md-5 mb-4">
@@ -8,9 +72,21 @@
                     <button class="btn btn-primary w-100 mb-2">
                         <i class="ki-outline ki-plus-circle fs-2x"></i> Dodaj u omiljenje
                     </button>
-                    <button class="btn btn-dark w-100">
-                        <i class="ki-outline ki-star text-warning fs-2x"></i> Oceni
-                    </button>
+                    @if(ViewBag.UserHasRated != null && (bool)ViewBag.UserHasRated)
+                    {
+                        <button class="btn btn-dark w-100" disabled>
+                            <i class="ki-outline ki-star text-warning fs-2x"></i> Oceni
+                        </button>
+                        <div class="fs-8 mb-3 text-danger">
+                            Već ste ocenili ovaj video
+                        </div>
+                    }
+                    else
+                    {
+                        <button class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#rateVideoModal">
+                            <i class="ki-outline ki-star text-warning fs-2x"></i> Oceni
+                        </button>
+                    }
                 </div>
             </div>
         </div>
@@ -42,7 +118,7 @@
             <div class="d-flex align-items-center gap-3">
                 <div>
                     <i class="ki-solid ki-star text-warning fs-3"></i>
-                    <strong>7.5/10</strong>VK
+                    <strong>@ViewBag.AverageRating.ToString("0.0")/5</strong> VK
                 </div>
                 <div>
                     <i class="ki-solid ki-heart text-danger fs-3"></i>
@@ -56,3 +132,13 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script>
+        // inicijalizacija svih tooltip-ova na stranici
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}
+
