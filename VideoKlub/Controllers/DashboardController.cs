@@ -40,15 +40,9 @@ namespace VideoKlub.Controllers
         {
             if(!ModelState.IsValid)
             {
-                foreach (var error in ModelState)
-                {
-                    foreach (var err in error.Value.Errors)
-                    {
-                        Console.WriteLine($"FIELD: {error.Key} ERROR: {err.ErrorMessage}");
-                    }
-                }
-
                 ViewBag.Categories = await _categoriRepository.GetAllAsync();
+                TempData["FavoriteMessage"] = "Greška prilikom čuvanja novog sadržaja";
+                TempData["FavoriteType"] = "error";
                 return View(v);
             }
 
@@ -83,7 +77,7 @@ namespace VideoKlub.Controllers
             }
             await _videoRepository.AddAsync(v);
             await _videoRepository.SaveAsync();
-            TempData["FavoriteMessage"] = "Video dodat u omiljene!";
+            TempData["FavoriteMessage"] = "Uspešno sačuvan novi sadržaj!";
             TempData["FavoriteType"] = "success";
 
             return RedirectToAction("Index", "Video");

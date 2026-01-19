@@ -1,10 +1,10 @@
 ﻿// toastr-handler.js
 
 toastr.options = {
-    "closeButton": false,
+    "closeButton": true,
     "debug": false,
-    "newestOnTop": false,
-    "progressBar": false,
+    "newestOnTop": true,
+    "progressBar": true,
     "positionClass": "toastr-bottom-right",
     "preventDuplicates": false,
     "onclick": null,
