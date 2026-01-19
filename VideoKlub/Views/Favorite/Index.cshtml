@@ -1,0 +1,40 @@
+﻿@model IEnumerable<VideoKlub.Models.Favorite>
+
+<div class="container mt-5">
+    <h2>Moji omiljeni videi</h2>
+
+    @if (!Model.Any())
+    {
+        <p>Nemate omiljene videe.</p>
+    }
+    else
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Naslov</th>
+                    <th>Kategorija</th>
+                    <th>Trajanje</th>
+                    <th>Akcija</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var favorite in Model)
+                {
+                    <tr>
+                        <td>@favorite.Video.Title</td>
+                        <td>@favorite.Video.Category?.Name</td>
+                        <td>@favorite.Video.Duration</td>
+                        <td>
+                            <form asp-controller="Favorite" asp-action="Toggle" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="videoId" value="@favorite.VideoId" />
+                                <button class="btn btn-danger btn-sm">Ukloni iz omiljenih</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

@@ -23,6 +23,7 @@ namespace VideoKlub.Models
         public Category Category { get; set; }
 
         public bool IsActive { get; set; } = true;
-
+        [NotMapped]
+        public bool IsFavorite { get; set; } = false;
     }
 }

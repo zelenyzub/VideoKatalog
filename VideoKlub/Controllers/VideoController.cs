@@ -11,11 +11,13 @@ namespace VideoKlub.Controllers
     {
         private readonly IVideoRepository _videoRepository;
         private readonly IRateRepository _rateRepository;
+        private readonly IFavoriteRepository _favoriteRepository;
 
-        public VideoController(IVideoRepository videoRepository, IRateRepository rateRepository)
+        public VideoController(IVideoRepository videoRepository, IRateRepository rateRepository, IFavoriteRepository favoriteRepository)
         {
             _videoRepository = videoRepository;
             _rateRepository = rateRepository;
+            _favoriteRepository = favoriteRepository;
         }
         public async Task<IActionResult> Index()
         {
@@ -52,15 +54,22 @@ namespace VideoKlub.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var video = await _videoRepository.GetByIdWithCategoryAsync(id);
-            var avgRating = await _rateRepository.GetAverageRatingAsync(id);
+
             if(video == null)
             {
                 return NotFound();
             }
 
+            string userId = null;
+            if (User.Identity.IsAuthenticated)
+            {
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                video.IsFavorite = await _favoriteRepository.IsFavoriteAsync(id, userId);
+            }
+
+            var avgRating = await _rateRepository.GetAverageRatingAsync(id);
             ViewBag.AverageRating = avgRating;
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var userRate = await _rateRepository.GetUserRatingForVideoAsync(userId, id);
             ViewBag.UserHasRated = userRate != null;
             return View(video);

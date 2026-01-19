@@ -1,18 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VideoKlub.Models
 {
-    public class Rate
+    public class Favorite
     {
         public int Id { get; set; }
-
-        [Range(1, 5)]
-        [Required]
-        public int Value { get; set; }
-
         [Required]
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
 
@@ -27,5 +22,6 @@ namespace VideoKlub.Models
 
         [ForeignKey(nameof(UserId))]
         public IdentityUser User { get; set; }
+
     }
 }

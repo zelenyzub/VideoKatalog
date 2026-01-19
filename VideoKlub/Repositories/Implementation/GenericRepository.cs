@@ -40,6 +40,11 @@ namespace VideoKlub.Repositories.Implementation
             _dbSet.Remove(entity);
         }
 
+        public void Remove(T entity)
+        {
+            _dbSet.Remove(entity);
+        }
+
         public async Task SaveAsync()
         {
             await _context.SaveChangesAsync();

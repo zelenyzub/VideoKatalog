@@ -14,6 +14,7 @@ namespace VideoKlub.Data
         public DbSet<Video> Videos { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Rate> Rates { get; set; }
+        public DbSet<Favorite> Favorites { get; set; } 
 
         //USER CANT RATE ONE VIDEO MORE THEN ONCE
         protected override void OnModelCreating(ModelBuilder builder)
@@ -22,6 +23,10 @@ namespace VideoKlub.Data
 
             builder.Entity<Rate>()
                 .HasIndex(r => new { r.VideoId, r.UserId })
+                .IsUnique();
+
+            builder.Entity<Favorite>()
+                .HasIndex(f => new { f.VideoId, f.UserId })
                 .IsUnique();
         }
 

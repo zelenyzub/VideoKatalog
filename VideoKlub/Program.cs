@@ -24,6 +24,8 @@ builder.Services.AddScoped<IVideoRepository, VideoRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 //rate repository
 builder.Services.AddScoped<IRateRepository, RateRepository>();
+//favorite repository
+builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 
 var app = builder.Build();
 
