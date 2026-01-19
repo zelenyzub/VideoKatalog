@@ -1,0 +1,72 @@
+﻿@model VideoKlub.Models.Video
+@inject VideoKlub.Repositories.Interfaces.ICategoryRepository CategoryRepository
+
+<div class="container mt-5">
+    <div class="card card-flush shadow-sm">
+        <div class="card-header">
+            <h3 class="card-title">Dodaj Novi Video</h3>
+        </div>
+        <div class="card-body">
+            <form asp-controller="Dashboard" asp-action="AddVideo" method="post" enctype="multipart/form-data" class="form">
+
+                <!-- Naslov -->
+                <div class="mb-5">
+                    <label asp-for="Title" class="form-label">Naslov videa</label>
+                    <input asp-for="Title" class="form-control form-control-solid" placeholder="Unesite naslov videa" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- Opis -->
+                <div class="mb-5">
+                    <label asp-for="Description" class="form-label">Opis</label>
+                    <textarea asp-for="Description" class="form-control form-control-solid" rows="4" placeholder="Unesite opis videa"></textarea>
+                </div>
+
+                <!-- Trajanje -->
+                <div class="mb-5">
+                    <label asp-for="Duration" class="form-label">Trajanje</label>
+                    <input asp-for="Duration" class="form-control form-control-solid" placeholder="Unesite trajanje (npr. 02:30)" />
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
+
+                <!-- URL -->
+                <div class="mb-5">
+                    <label asp-for="URL" class="form-label">Video URL</label>
+                    <input asp-for="URL" class="form-control form-control-solid" placeholder="Unesite link ka videu" />
+                </div>
+
+                <!-- Kategorija -->
+                <div class="mb-5">
+                    <label asp-for="CategoryId" class="form-label">Kategorija</label>
+                    <select asp-for="CategoryId" asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))" class="form-select form-select-solid">
+                        <option value="">-- Izaberite kategoriju --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <!-- Slika -->
+                <div class="mb-5">
+                    <label asp-for="ImageFile" class="form-label">Slika videa</label>
+                    <input asp-for="ImageFile" type="file" class="form-control form-control-solid" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+
+                <!-- Aktivno -->
+                <div class="mb-5 form-check form-switch">
+                    <input asp-for="IsActive" class="form-check-input" type="checkbox" id="IsActive">
+                    <label class="form-check-label" for="IsActive">Aktivan</label>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a asp-action="Index" class="btn btn-light me-3">Odustani</a>
+                    <button type="submit" class="btn btn-primary">Sačuvaj</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
