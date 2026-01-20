@@ -12,6 +12,7 @@ namespace VideoKlub.Repositories.Implementation
         {
         }
 
+        // Get all categories
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _context.Categories.ToListAsync();

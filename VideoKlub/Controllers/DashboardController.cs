@@ -23,9 +23,10 @@ namespace VideoKlub.Controllers
             _categoriRepository = categoryRepository;
             _env = env;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var videos = await _videoRepository.GetAllWithCategoryAdminAsync();
+            return View(videos);
         }
 
         public async Task<IActionResult> AddVideo()

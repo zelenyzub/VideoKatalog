@@ -11,6 +11,7 @@ namespace VideoKlub.Repositories.Implementation
         {
         }
 
+        // Get average rating for a specific video
         public async Task<double> GetAverageRatingAsync(int videoId)
         {
             return await _context.Rates
@@ -18,6 +19,7 @@ namespace VideoKlub.Repositories.Implementation
                 .AverageAsync(r => (double?)r.Value) ?? 0;
         }
 
+        // Get rating given by a specific user for a specific video
         public async Task<Rate> GetUserRatingForVideoAsync(string userId, int videoId)
         {
             return await _context.Rates

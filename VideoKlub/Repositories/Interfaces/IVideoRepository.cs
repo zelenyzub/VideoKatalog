@@ -10,5 +10,6 @@ namespace VideoKlub.Repositories.Interfaces
         Task<Video> GetByIdWithCategoryAsync(int id);
         Task<IEnumerable<Video>> SearchByTitleOrDescriptionAsync(string query);
         Task<IEnumerable<Video>> GetByCategoryAsync(int[] categoryIds);
+        Task<IEnumerable<Video>> GetAllWithCategoryAdminAsync();
     }
 }

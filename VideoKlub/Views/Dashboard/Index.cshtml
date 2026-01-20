@@ -1,1 +1,93 @@
-﻿<h1>TESTTT</h1>
+﻿@model IEnumerable<VideoKlub.Models.Video>
+
+<div class="container mt-5">
+    <div class="card card-flush shadow-sm">
+
+        <!-- HEADER -->
+        <div class="card-header align-items-center">
+            <h3 class="card-title fw-bold">Video sadržaj</h3>
+
+            <div class="card-toolbar">
+                <a asp-action="AddVideo" class="btn btn-primary">
+                    <i class="ki-duotone ki-plus fs-2 me-1"></i>
+                    Dodaj novi video
+                </a>
+            </div>
+        </div>
+
+        <!-- BODY -->
+        <div class="card-body pt-0">
+            <div class="table-responsive">
+                <table class="table table-row-dashed table-row-gray-300 align-middle gs-7">
+                    <thead>
+                        <tr class="fw-semibold text-gray-600">
+                            <th>Naslov</th>
+                            <th>Opis</th>
+                            <th>Trajanje</th>
+                            <th>URL</th>
+                            <th>Kategorija</th>
+                            <th class="text-end">Akcije</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var video in Model)
+                        {
+                            <tr class="@(video.IsActive ? "" : "bg-light-danger")">
+                                <td class="fw-bold text-gray-800">
+                                    @video.Title
+                                </td>
+
+                                <td class="text-gray-700">
+                                    @(string.IsNullOrWhiteSpace(video.Description) ? "-" : video.Description)
+                                </td>
+
+                                <td>@video.Duration</td>
+
+                                <td>
+                                    @if (!string.IsNullOrEmpty(video.URL))
+                                    {
+                                        <a href="@video.URL" target="_blank" class="text-primary fw-semibold">
+                                            Pogledaj
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="badge badge-light-primary fw-semibold">
+                                        @video.Category?.Name
+                                    </span>
+                                </td>
+
+                                <!-- AKCIJE -->
+                                <td class="text-end">
+                                    <a asp-action="Edit"
+                                       asp-route-id="@video.Id"
+                                       class="btn btn-icon btn-active-light-primary btn-sm me-1"
+                                       data-bs-toggle="tooltip"
+                                       title="Izmeni">
+                                        <i class="ki-outline ki-pencil fs-2"></i>
+                                    </a>
+
+                                    <a asp-action="Delete"
+                                       asp-route-id="@video.Id"
+                                       class="btn btn-icon btn-active-light-danger btn-sm"
+                                       data-bs-toggle="tooltip"
+                                       title="Obriši"
+                                       onclick="return confirm('Da li ste sigurni da želite da obrišete ovaj video?');">
+                                        <i class="ki-outline ki-trash-square fs-2"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
