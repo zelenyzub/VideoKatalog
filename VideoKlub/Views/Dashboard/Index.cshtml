@@ -9,7 +9,7 @@
 
             <div class="card-toolbar">
                 <a asp-action="AddVideo" class="btn btn-primary">
-                    <i class="ki-duotone ki-plus fs-2 me-1"></i>
+                    <i class="ki-outline ki-plus-circle fs-2 me-1"></i>
                     Dodaj novi video
                 </a>
             </div>
@@ -38,7 +38,7 @@
                                     @video.Title
                                 </td>
 
-                                <td class="text-gray-700">
+                                <td class="text-gray-700" style="max-width: 250px; white-space: normal; word-break: break-word;">
                                     @(string.IsNullOrWhiteSpace(video.Description) ? "-" : video.Description)
                                 </td>
 
@@ -65,7 +65,15 @@
 
                                 <!-- AKCIJE -->
                                 <td class="text-end">
-                                    <a asp-action="Edit"
+                                    <a asp-controller="Video" asp-action="Details"
+                                       asp-route-id="@video.Id"
+                                       class="btn btn-icon btn-active-light-info btn-sm me-1"
+                                       data-bs-toggle="tooltip"
+                                       title="Detalji">
+                                        <i class="ki-outline ki-information-2 fs-2"></i>
+                                    </a>
+
+                                    <a asp-controller="Dashboard" asp-action="Edit"
                                        asp-route-id="@video.Id"
                                        class="btn btn-icon btn-active-light-primary btn-sm me-1"
                                        data-bs-toggle="tooltip"
@@ -73,14 +81,18 @@
                                         <i class="ki-outline ki-pencil fs-2"></i>
                                     </a>
 
-                                    <a asp-action="Delete"
-                                       asp-route-id="@video.Id"
-                                       class="btn btn-icon btn-active-light-danger btn-sm"
+                                    <a href="javascript:void(0);"
+                                       class="btn btn-icon btn-active-light-danger btn-sm delete-video-btn"
+                                       data-id="@video.Id"
                                        data-bs-toggle="tooltip"
-                                       title="Obriši"
-                                       onclick="return confirm('Da li ste sigurni da želite da obrišete ovaj video?');">
+                                       title="Obriši">
                                         <i class="ki-outline ki-trash-square fs-2"></i>
                                     </a>
+
+                                    <form id="deleteForm-@video.Id" asp-controller="Dashboard" asp-action="Delete" method="post" class="d-none">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@video.Id" />
+                                    </form>
                                 </td>
                             </tr>
                         }

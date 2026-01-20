@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using VideoKlub.Models;
 using VideoKlub.Repositories.Interfaces;
 
@@ -81,7 +82,72 @@ namespace VideoKlub.Controllers
             TempData["FavoriteMessage"] = "Uspešno sačuvan novi sadržaj!";
             TempData["FavoriteType"] = "success";
 
-            return RedirectToAction("Index", "Video");
+            return RedirectToAction("Index", "Dashboard");
+        }
+
+        public async Task<IActionResult> Edit(int id)
+        {
+            var video = await _videoRepository.GetByIdAsync(id);
+            if(video == null)
+            {
+                return NotFound();
+            }
+
+            ViewBag.Categories = await _categoriRepository.GetAllAsync();
+            return View(video);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Video v)
+        {
+            ModelState.Remove("ImageFile");
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Categories = await _categoriRepository.GetAllAsync();
+                return View(v);
+            }
+
+            var video = await _videoRepository.GetByIdAsync(v.Id);
+
+            if(video == null)
+            {
+                return NotFound();
+            }
+
+            video.Title = v.Title;
+            video.Description = v.Description;
+            video.Duration = v.Duration;
+            video.URL = v.URL;
+            video.CategoryId = v.CategoryId;
+
+            _videoRepository.Update(video);
+            await _videoRepository.SaveAsync();
+
+            TempData["FavoriteMessage"] = "Uspešno izmenjen sadržaj!";
+            TempData["FavoriteType"] = "success";
+
+            return RedirectToAction("Index", "Dashboard");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var video = await _videoRepository.GetByIdAsync(id);
+            if(video == null)
+            {
+                return NotFound();
+            }
+
+            _videoRepository.Delete(video);
+            await _videoRepository.SaveAsync();
+
+            TempData["FavoriteMessage"] = "Uspešno obrisan sadržaj - " + video.Title;
+            TempData["FavoriteType"] = "success";
+
+            return RedirectToAction("Index", "Dashboard");
         }
     }
 }

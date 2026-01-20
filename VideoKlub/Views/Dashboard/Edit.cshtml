@@ -1,0 +1,65 @@
+﻿@model VideoKlub.Models.Video
+
+<div class="container mt-5">
+    <div class="card card-flush shadow-sm">
+        <div class="card-header">
+            <h3 class="card-title">Izmeni video</h3>
+        </div>
+
+        <div class="card-body">
+            <form asp-action="Edit" method="post" class="form">
+
+                <input type="hidden" asp-for="Id" />
+
+                <!-- NASLOV -->
+                <div class="mb-5">
+                    <label asp-for="Title" class="form-label required">Naslov</label>
+                    <input asp-for="Title" class="form-control form-control-solid" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <!-- OPIS -->
+                <div class="mb-5">
+                    <label asp-for="Description" class="form-label">Opis</label>
+                    <textarea asp-for="Description"
+                              rows="4"
+                              class="form-control form-control-solid"></textarea>
+                </div>
+
+                <!-- TRAJANJE -->
+                <div class="mb-5">
+                    <label asp-for="Duration" class="form-label required">Trajanje</label>
+                    <input asp-for="Duration" class="form-control form-control-solid" />
+                    <span asp-validation-for="Duration" class="text-danger"></span>
+                </div>
+
+                <!-- URL -->
+                <div class="mb-5">
+                    <label asp-for="URL" class="form-label">Video URL</label>
+                    <input asp-for="URL" class="form-control form-control-solid" />
+                </div>
+
+                <!-- KATEGORIJA -->
+                <div class="mb-5">
+                    <label asp-for="CategoryId" class="form-label required">Kategorija</label>
+                    <select asp-for="CategoryId"
+                            asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))"
+                            class="form-select form-select-solid">
+                        <option value="">-- Izaberite kategoriju --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-end">
+                    <a asp-action="Index" class="btn btn-light me-3">Odustani</a>
+                    <button type="submit" class="btn btn-primary">Sačuvaj izmene</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

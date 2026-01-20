@@ -11,7 +11,7 @@
 
                 <!-- Naslov -->
                 <div class="mb-5">
-                    <label asp-for="Title" class="form-label">Naslov videa</label>
+                    <label asp-for="Title" class="form-label required">Naslov videa</label>
                     <input asp-for="Title" class="form-control form-control-solid" placeholder="Unesite naslov videa" />
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
@@ -24,7 +24,7 @@
 
                 <!-- Trajanje -->
                 <div class="mb-5">
-                    <label asp-for="Duration" class="form-label">Trajanje</label>
+                    <label asp-for="Duration" class="form-label required">Trajanje</label>
                     <input asp-for="Duration" class="form-control form-control-solid" placeholder="Unesite trajanje (npr. 02:30)" />
                     <span asp-validation-for="Duration" class="text-danger"></span>
                 </div>
@@ -37,7 +37,7 @@
 
                 <!-- Kategorija -->
                 <div class="mb-5">
-                    <label asp-for="CategoryId" class="form-label">Kategorija</label>
+                    <label asp-for="CategoryId" class="form-label required">Kategorija</label>
                     <select asp-for="CategoryId" asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))" class="form-select form-select-solid">
                         <option value="">-- Izaberite kategoriju --</option>
                     </select>
@@ -46,7 +46,7 @@
 
                 <!-- Slika -->
                 <div class="mb-5">
-                    <label asp-for="ImageFile" class="form-label">Slika videa</label>
+                    <label asp-for="ImageFile" class="form-label required">Slika videa</label>
                     <input asp-for="ImageFile" type="file" class="form-control form-control-solid" />
                     <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
