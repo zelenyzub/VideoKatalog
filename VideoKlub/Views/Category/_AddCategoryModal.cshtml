@@ -1,0 +1,37 @@
+﻿@model VideoKlub.Models.Category
+
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-500px">
+        <div class="modal-content">
+
+            <!-- Klasična ASP.NET forma sa controller i action -->
+            <form asp-controller="Category" asp-action="AddCategory" method="post">
+                @Html.AntiForgeryToken()
+
+                <!-- Modal header -->
+                <div class="modal-header">
+                    <h2 class="fw-bold">Dodaj novu kategoriju</h2>
+                    <div class="btn btn-icon btn-sm btn-active-light-primary" data-bs-dismiss="modal">
+                        <i class="ki-outline ki-cross fs-1"></i>
+                    </div>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="mb-10">
+                        <label class="form-label fw-semibold">Naziv kategorije</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Otkaži</button>
+                    <button type="submit" class="btn btn-primary">Sačuvaj</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

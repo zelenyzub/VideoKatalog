@@ -6,7 +6,7 @@ namespace VideoKlub.Models
     public class Category
     {
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Naziv kategorije je obavezan!")]
         public string Name { get; set; }
 
         public ICollection<Video> Videos { get; set; }

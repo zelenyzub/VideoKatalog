@@ -1,5 +1,4 @@
 ﻿@model IEnumerable<VideoKlub.Models.Video>
-
 <div class="container mt-5">
     <div class="card card-flush shadow-sm">
 
@@ -102,4 +101,121 @@
         </div>
 
     </div>
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <div class="card card-flush shadow-sm">
+                <div class="card-header align-items-center">
+                    <h3 class="card-title fw-bold">Kategorije</h3>
+                    <div class="card-toolbar">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                            <i class="ki-outline ki-plus-circle fs-2 me-1"></i>
+                            Dodaj novu kategoriju
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body pt-0">
+                    <div class="table-responsive">
+                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-7">
+                            <thead>
+                                <tr class="fw-semibold text-gray-600">
+                                    <th>Naziv</th>
+                                    <th class="text-end">Akcije</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var category in ViewBag.Categories)
+                                {
+                                    <tr>
+                                        <td>@category.Name</td>
+                                        <td class="text-end">
+                                            <!-- Edit dugme -->
+                                            <a asp-controller="Dashboard"
+                                               asp-action="EditCategory"
+                                               asp-route-id="@category.Id"
+                                               class="btn btn-icon btn-active-light-primary btn-sm me-1"
+                                               data-bs-toggle="tooltip"
+                                               title="Izmeni">
+                                                <i class="ki-outline ki-pencil fs-2"></i>
+                                            </a>
+
+                                            <!-- Delete dugme -->
+                                            <a href="javascript:void(0);"
+                                               class="btn btn-icon btn-active-light-danger btn-sm delete-category-btn"
+                                               data-id="@category.Id"
+                                               data-bs-toggle="tooltip"
+                                               title="Obriši">
+                                                <i class="ki-outline ki-trash-square fs-2"></i>
+                                            </a>
+
+                                            <!-- Skrivena forma za submit -->
+                                            <form id="deleteCategoryForm-@category.Id"
+                                                  asp-controller="Category"
+                                                  asp-action="DeleteCategory"
+                                                  method="post" class="d-none">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="id" value="@category.Id" />
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    @await Html.PartialAsync("~/Views/Category/_AddCategoryModal.cshtml", new VideoKlub.Models.Category())
+
 </div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#addCategoryForm").submit(function (e) {
+                e.preventDefault(); // sprečava reload
+
+                var name = $("#CategoryName").val();
+                var token = $('input[name="__RequestVerificationToken"]').val();
+
+                $.ajax({
+                    url: '@Url.Action("AddCategory", "Category")',
+                    type: 'POST',
+                    data: {
+                        Name: name,
+                        __RequestVerificationToken: token
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // Dodaj novu kategoriju u tabelu
+                            var newRow = `<tr>
+                                <td>${response.categoryName}</td>
+                                <td class="text-end">
+                                    <a href="javascript:void(0);" class="btn btn-icon btn-active-light-primary btn-sm me-1 edit-category-btn" data-id="${response.categoryId}">
+                                        <i class="ki-outline ki-pencil fs-2"></i>
+                                    </a>
+                                    <a href="javascript:void(0);" class="btn btn-icon btn-active-light-danger btn-sm delete-category-btn" data-id="${response.categoryId}">
+                                        <i class="ki-outline ki-trash-square fs-2"></i>
+                                    </a>
+                                </td>
+                            </tr>`;
+                            $("#categoriesTable tbody").append(newRow);
+
+                            // Reset forme i zatvori modal
+                            $("#CategoryName").val('');
+                            $("#addCategoryModal").modal('hide');
+                        } else {
+                            $("#categoryError").text(response.error);
+                        }
+                    },
+                    error: function () {
+                        $("#categoryError").text("Došlo je do greške. Pokušajte ponovo.");
+                    }
+                });
+            });
+        });
+    </script>
+}

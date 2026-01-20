@@ -27,6 +27,9 @@ namespace VideoKlub.Controllers
         public async Task<IActionResult> Index()
         {
             var videos = await _videoRepository.GetAllWithCategoryAdminAsync();
+            var categories = await _categoriRepository.GetAllAsync();
+
+            ViewBag.Categories = categories;
             return View(videos);
         }
 
