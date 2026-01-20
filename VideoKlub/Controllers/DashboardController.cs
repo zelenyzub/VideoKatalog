@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using VideoKlub.Models;
+using VideoKlub.Repositories.Implementation;
 using VideoKlub.Repositories.Interfaces;
 
 namespace VideoKlub.Controllers
@@ -13,22 +14,29 @@ namespace VideoKlub.Controllers
         private readonly IVideoRepository _videoRepository;
         private readonly ICategoryRepository _categoriRepository;
         private readonly IWebHostEnvironment _env;
+        private readonly IUserRepository _userRepository;
 
 
         public DashboardController(
             IVideoRepository videoRepository,
             ICategoryRepository categoryRepository,
-            IWebHostEnvironment env)
+            IWebHostEnvironment env,
+            IUserRepository userRepository)
         {
             _videoRepository = videoRepository;
             _categoriRepository = categoryRepository;
             _env = env;
+            _userRepository = userRepository;
         }
         public async Task<IActionResult> Index()
         {
             var videos = await _videoRepository.GetAllWithCategoryAdminAsync();
             var categories = await _categoriRepository.GetAllAsync();
+            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            var users = await _userRepository.GetAllUsersAsync(currentUserId);
 
+
+            ViewBag.Users = users;
             ViewBag.Categories = categories;
             return View(videos);
         }

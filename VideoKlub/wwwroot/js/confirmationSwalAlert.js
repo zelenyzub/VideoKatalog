@@ -57,5 +57,14 @@
         cancelButtonText: 'Otkaži'
     });
 
-
+    // Delete user
+    confirmAction({
+        selector: '.delete-user-btn',
+        idDataAttr: 'id',
+        formPrefix: 'deleteUserForm-',
+        confirmTitle: 'Pažnja!',
+        confirmText: 'Ova akcija će trajno obrisati korisnika!',
+        confirmButtonText: 'Da, obriši!',
+        cancelButtonText: 'Otkaži'
+    });
 });

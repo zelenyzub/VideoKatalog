@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inject RoleManager<IdentityRole> RoleManager
+
+<div class="card card-flush shadow-sm">
+    <div class="card-header align-items-center">
+        <h3 class="card-title fw-bold">Korisnici</h3>
+    </div>
+    <div class="card-body pt-0">
+        @if (!Model.Any())
+        {
+            <!-- Metronic info alert ako nema korisnika -->
+            <div class="alert alert-info d-flex align-items-center p-5 mb-10">
+                <i class="ki-outline ki-information fs-2hx me-4"></i>
+                <div class="d-flex flex-column">
+                    <h4 class="mb-1">Nema korisnika</h4>
+                    <span>Trenutno nema registrovanih korisnika u sistemu.</span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-row-dashed table-row-gray-300 align-middle gs-7">
+                    <thead>
+                        <tr class="fw-semibold text-gray-600">
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Rola</th>
+                            <th class="text-end">Akcije</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            var isDisabled = user.LockoutEnabled && user.LockoutEnd > DateTimeOffset.UtcNow;
+                            var roles = await UserManager.GetRolesAsync(user);
+                            var userRole = roles.FirstOrDefault() ?? "User";
+
+                            <tr class="@(isDisabled ? "bg-light-danger" : "")">
+                                <td>@user.Email</td>
+                                <td>
+                                    <span class="badge @(isDisabled ? "badge-light-danger" : "badge-light-success") fw-semibold">
+                                        @(isDisabled ? "Disabled" : "Active")
+                                    </span>
+                                </td>
+
+                                <!-- Role kolona -->
+                                <td>
+                                    <form asp-controller="User" asp-action="ChangeRole" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="userId" value="@user.Id" />
+                                        <select name="newRole" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+                                            <option value="User" selected="@(userRole == "User" ? "selected" : null)">User</option>
+                                            <option value="Admin" selected="@(userRole == "Admin" ? "selected" : null)">Admin</option>
+                                        </select>
+                                    </form>
+                                </td>
+
+                                <!-- Akcije kolona -->
+                                <td class="text-end">
+
+                                    @* Enable dugme *@
+                                    @if (isDisabled)
+                                    {
+                                        <form asp-controller="User" asp-action="Enable" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@user.Id" />
+                                            <button type="submit" class="btn btn-icon btn-active-light-success btn-sm me-1" title="Enable user">
+                                                <i class="ki-outline ki-key fs-2"></i>
+                                            </button>
+                                        </form>
+                                    }
+
+                                    @* Disable dugme *@
+                                    @if (!isDisabled)
+                                    {
+                                        <form asp-controller="User" asp-action="Disable" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@user.Id" />
+                                            <button type="submit" class="btn btn-icon btn-active-light-warning btn-sm me-1" title="Disable user">
+                                                <i class="ki-outline ki-lock fs-2"></i>
+                                            </button>
+                                        </form>
+                                    }
+
+                                    @* Delete dugme *@
+                                    <button type="button" class="btn btn-icon btn-active-light-danger btn-sm delete-user-btn"
+                                            data-id="@user.Id" title="Obriši korisnika">
+                                        <i class="ki-outline ki-trash-square fs-2"></i>
+                                    </button>
+
+                                    <form id="deleteUserForm-@user.Id" asp-controller="User" asp-action="Delete" method="post" class="d-none">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@user.Id" />
+                                    </form>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>

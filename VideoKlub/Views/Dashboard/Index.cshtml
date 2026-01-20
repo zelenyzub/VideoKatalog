@@ -16,88 +16,77 @@
 
         <!-- BODY -->
         <div class="card-body pt-0">
-            <div class="table-responsive">
-                <table class="table table-row-dashed table-row-gray-300 align-middle gs-7">
-                    <thead>
-                        <tr class="fw-semibold text-gray-600">
-                            <th>Naslov</th>
-                            <th>Opis</th>
-                            <th>Trajanje</th>
-                            <th>URL</th>
-                            <th>Kategorija</th>
-                            <th class="text-end">Akcije</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (var video in Model)
-                        {
-                            <tr class="@(video.IsActive ? "" : "bg-light-danger")">
-                                <td class="fw-bold text-gray-800">
-                                    @video.Title
-                                </td>
-
-                                <td class="text-gray-700" style="max-width: 250px; white-space: normal; word-break: break-word;">
-                                    @(string.IsNullOrWhiteSpace(video.Description) ? "-" : video.Description)
-                                </td>
-
-                                <td>@video.Duration</td>
-
-                                <td>
-                                    @if (!string.IsNullOrEmpty(video.URL))
-                                    {
-                                        <a href="@video.URL" target="_blank" class="text-primary fw-semibold">
-                                            Pogledaj
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-
-                                <td>
-                                    <span class="badge badge-light-primary fw-semibold">
-                                        @video.Category?.Name
-                                    </span>
-                                </td>
-
-                                <!-- AKCIJE -->
-                                <td class="text-end">
-                                    <a asp-controller="Video" asp-action="Details"
-                                       asp-route-id="@video.Id"
-                                       class="btn btn-icon btn-active-light-info btn-sm me-1"
-                                       data-bs-toggle="tooltip"
-                                       title="Detalji">
-                                        <i class="ki-outline ki-information-2 fs-2"></i>
-                                    </a>
-
-                                    <a asp-controller="Dashboard" asp-action="Edit"
-                                       asp-route-id="@video.Id"
-                                       class="btn btn-icon btn-active-light-primary btn-sm me-1"
-                                       data-bs-toggle="tooltip"
-                                       title="Izmeni">
-                                        <i class="ki-outline ki-pencil fs-2"></i>
-                                    </a>
-
-                                    <a href="javascript:void(0);"
-                                       class="btn btn-icon btn-active-light-danger btn-sm delete-video-btn"
-                                       data-id="@video.Id"
-                                       data-bs-toggle="tooltip"
-                                       title="Obriši">
-                                        <i class="ki-outline ki-trash-square fs-2"></i>
-                                    </a>
-
-                                    <form id="deleteForm-@video.Id" asp-controller="Dashboard" asp-action="Delete" method="post" class="d-none">
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="id" value="@video.Id" />
-                                    </form>
-                                </td>
+            @if (!Model.Any())
+            {
+                <!-- Metronic info alert za praznu tabelu videa -->
+                <div class="alert alert-info d-flex align-items-center p-5 mb-10">
+                    <i class="ki-outline ki-information fs-2hx me-4"></i>
+                    <div class="d-flex flex-column">
+                        <h4 class="mb-1">Nema video sadržaja</h4>
+                        <span>Trenutno nema dodanih video zapisa u sistemu.</span>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-row-dashed table-row-gray-300 align-middle gs-7">
+                        <thead>
+                            <tr class="fw-semibold text-gray-600">
+                                <th>Naslov</th>
+                                <th>Opis</th>
+                                <th>Trajanje</th>
+                                <th>URL</th>
+                                <th>Kategorija</th>
+                                <th class="text-end">Akcije</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @foreach (var video in Model)
+                            {
+                                <tr class="@(video.IsActive ? "" : "bg-light-danger")">
+                                    <td class="fw-bold text-gray-800">@video.Title</td>
+                                    <td class="text-gray-700" style="max-width: 250px; white-space: normal; word-break: break-word;">
+                                        @(string.IsNullOrWhiteSpace(video.Description) ? "-" : video.Description)
+                                    </td>
+                                    <td>@video.Duration</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(video.URL))
+                                        {
+                                            <a href="@video.URL" target="_blank" class="text-primary fw-semibold">Pogledaj</a>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-light-primary fw-semibold">@video.Category?.Name</span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a asp-controller="Video" asp-action="Details" asp-route-id="@video.Id"
+                                           class="btn btn-icon btn-active-light-info btn-sm me-1" data-bs-toggle="tooltip" title="Detalji">
+                                            <i class="ki-outline ki-information-2 fs-2"></i>
+                                        </a>
+                                        <a asp-controller="Dashboard" asp-action="Edit" asp-route-id="@video.Id"
+                                           class="btn btn-icon btn-active-light-primary btn-sm me-1" data-bs-toggle="tooltip" title="Izmeni">
+                                            <i class="ki-outline ki-pencil fs-2"></i>
+                                        </a>
+                                        <a href="javascript:void(0);" class="btn btn-icon btn-active-light-danger btn-sm delete-video-btn"
+                                           data-id="@video.Id" data-bs-toggle="tooltip" title="Obriši">
+                                            <i class="ki-outline ki-trash-square fs-2"></i>
+                                        </a>
+                                        <form id="deleteForm-@video.Id" asp-controller="Dashboard" asp-action="Delete" method="post" class="d-none">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="id" value="@video.Id" />
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
         </div>
 
     </div>
@@ -116,106 +105,61 @@
                 </div>
 
                 <div class="card-body pt-0">
-                    <div class="table-responsive">
-                        <table class="table table-row-dashed table-row-gray-300 align-middle gs-7">
-                            <thead>
-                                <tr class="fw-semibold text-gray-600">
-                                    <th>Naziv</th>
-                                    <th class="text-end">Akcije</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var category in ViewBag.Categories)
-                                {
-                                    <tr>
-                                        <td>@category.Name</td>
-                                        <td class="text-end">
-                                            <!-- Edit dugme -->
-                                            <a href="javascript:void(0);"
-                                               class="btn btn-icon btn-active-light-primary btn-sm me-1"
-                                               data-bs-toggle="modal"
-                                               data-bs-target="#editCategoryModal-@category.Id"
-                                               title="Izmeni">
-                                                <i class="ki-outline ki-pencil fs-2"></i>
-                                            </a>
-
-                                            <!-- Delete dugme -->
-                                            <a href="javascript:void(0);"
-                                               class="btn btn-icon btn-active-light-danger btn-sm delete-category-btn"
-                                               data-id="@category.Id"
-                                               data-bs-toggle="tooltip"
-                                               title="Obriši">
-                                                <i class="ki-outline ki-trash-square fs-2"></i>
-                                            </a>
-
-                                            <!-- Skrivena forma za submit -->
-                                            <form id="deleteCategoryForm-@category.Id"
-                                                  asp-controller="Category"
-                                                  asp-action="DeleteCategory"
-                                                  method="post" class="d-none">
-                                                @Html.AntiForgeryToken()
-                                                <input type="hidden" name="id" value="@category.Id" />
-                                            </form>
-                                        </td>
+                    @if (ViewBag.Categories == null || !((IEnumerable<VideoKlub.Models.Category>)ViewBag.Categories).Any())
+                    {
+                        <!-- Metronic info alert za prazne kategorije -->
+                        <div class="alert alert-info d-flex align-items-center p-5 mb-10">
+                            <i class="ki-outline ki-information fs-2hx me-4"></i>
+                            <div class="d-flex flex-column">
+                                <h4 class="mb-1">Nema kategorija</h4>
+                                <span>Trenutno nema kreiranih kategorija.</span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-row-dashed table-row-gray-300 align-middle gs-7" id="categoriesTable">
+                                <thead>
+                                    <tr class="fw-semibold text-gray-600">
+                                        <th>Naziv</th>
+                                        <th class="text-end">Akcije</th>
                                     </tr>
-                                    @await Html.PartialAsync("~/Views/Category/_EditCategoryModal.cshtml",(VideoKlub.Models.Category)category)
-                                }
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    @foreach (var category in ViewBag.Categories)
+                                    {
+                                        <tr>
+                                            <td>@category.Name</td>
+                                            <td class="text-end">
+                                                <a href="javascript:void(0);" class="btn btn-icon btn-active-light-primary btn-sm me-1"
+                                                   data-bs-toggle="modal" data-bs-target="#editCategoryModal-@category.Id" title="Izmeni">
+                                                    <i class="ki-outline ki-pencil fs-2"></i>
+                                                </a>
+                                                <a href="javascript:void(0);" class="btn btn-icon btn-active-light-danger btn-sm delete-category-btn"
+                                                   data-id="@category.Id" data-bs-toggle="tooltip" title="Obriši">
+                                                    <i class="ki-outline ki-trash-square fs-2"></i>
+                                                </a>
+                                                <form id="deleteCategoryForm-@category.Id" asp-controller="Category" asp-action="DeleteCategory" method="post" class="d-none">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@category.Id" />
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        @await Html.PartialAsync("~/Views/Category/_EditCategoryModal.cshtml", (VideoKlub.Models.Category)category)
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
+
+        <div class="col-md-6">
+            @await Html.PartialAsync("~/Views/User/_UserTablePartial.cshtml", (IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>)ViewBag.Users)
+        </div>
     </div>
 
-
     @await Html.PartialAsync("~/Views/Category/_AddCategoryModal.cshtml", new VideoKlub.Models.Category())
-
 </div>
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            $("#addCategoryForm").submit(function (e) {
-                e.preventDefault(); // sprečava reload
-
-                var name = $("#CategoryName").val();
-                var token = $('input[name="__RequestVerificationToken"]').val();
-
-                $.ajax({
-                    url: '@Url.Action("AddCategory", "Category")',
-                    type: 'POST',
-                    data: {
-                        Name: name,
-                        __RequestVerificationToken: token
-                    },
-                    success: function (response) {
-                        if (response.success) {
-                            // Dodaj novu kategoriju u tabelu
-                            var newRow = `<tr>
-                                <td>${response.categoryName}</td>
-                                <td class="text-end">
-                                    <a href="javascript:void(0);" class="btn btn-icon btn-active-light-primary btn-sm me-1 edit-category-btn" data-id="${response.categoryId}">
-                                        <i class="ki-outline ki-pencil fs-2"></i>
-                                    </a>
-                                    <a href="javascript:void(0);" class="btn btn-icon btn-active-light-danger btn-sm delete-category-btn" data-id="${response.categoryId}">
-                                        <i class="ki-outline ki-trash-square fs-2"></i>
-                                    </a>
-                                </td>
-                            </tr>`;
-                            $("#categoriesTable tbody").append(newRow);
-
-                            // Reset forme i zatvori modal
-                            $("#CategoryName").val('');
-                            $("#addCategoryModal").modal('hide');
-                        } else {
-                            $("#categoryError").text(response.error);
-                        }
-                    },
-                    error: function () {
-                        $("#categoryError").text("Došlo je do greške. Pokušajte ponovo.");
-                    }
-                });
-            });
-        });
-    </script>
-}

@@ -26,6 +26,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRateRepository, RateRepository>();
 //favorite repository
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
+//user repository
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 
