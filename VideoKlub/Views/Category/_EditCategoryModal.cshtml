@@ -1,0 +1,28 @@
+﻿@model VideoKlub.Models.Category
+
+<div class="modal fade" id="editCategoryModal-@Model.Id" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered mw-500px">
+        <div class="modal-content">
+
+            <form method="post" asp-action="EditCategory" asp-controller="Category">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="modal-body">
+                    <label class="form-label fw-semibold required">Naziv kategorije</label>
+                    <input name="Name" value="@Model.Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Otkaži</button>
+                    <button type="submit" class="btn btn-primary">Sačuvaj izmene</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

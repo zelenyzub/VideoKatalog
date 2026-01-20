@@ -24,9 +24,11 @@ namespace VideoKlub.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddCategory(string Name)
         {
-            if (string.IsNullOrWhiteSpace(Name))
+            if (!ModelState.IsValid)
             {
-                return Json(new { success = false, error = "Naziv kategorije ne može biti prazan." });
+                TempData["FavoriteMessage"] = "Morate uneti naziv nove kategorija!";
+                TempData["FavoriteType"] = "error";
+                return RedirectToAction("Index", "Dashboard");
             }
 
             var category = new Category { Name = Name };
@@ -57,6 +59,46 @@ namespace VideoKlub.Controllers
 
             return RedirectToAction("Index", "Dashboard");
         }
+
+        public async Task<IActionResult> EditCategory(int id)
+        {
+            var category = await _categoryRepository.GetByIdAsync(id);
+            if (category == null)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+            return PartialView("_EditCategoryModal", category);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCategory(int Id, string Name)
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["FavoriteMessage"] = "Morate uneti naziv kategorija!";
+                TempData["FavoriteType"] = "error";
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            var category = await _categoryRepository.GetByIdAsync(Id);
+            if (category == null)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
+            var oldName = category.Name;
+
+            category.Name = Name;
+            _categoryRepository.Update(category);
+            await _categoryRepository.SaveAsync();
+
+            TempData["FavoriteMessage"] = "Naziv kategorije je uspešno izmenjen iz " + oldName + " u " + Name;
+            TempData["FavoriteType"] = "success";
+
+            return RedirectToAction("Index", "Dashboard");
+        }
+
 
     }
 }

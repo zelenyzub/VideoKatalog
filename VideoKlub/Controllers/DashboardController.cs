@@ -124,6 +124,7 @@ namespace VideoKlub.Controllers
             video.Duration = v.Duration;
             video.URL = v.URL;
             video.CategoryId = v.CategoryId;
+            video.IsActive = v.IsActive;
 
             _videoRepository.Update(video);
             await _videoRepository.SaveAsync();

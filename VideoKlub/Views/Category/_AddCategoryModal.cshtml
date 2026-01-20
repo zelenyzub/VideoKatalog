@@ -19,7 +19,7 @@
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="mb-10">
-                        <label class="form-label fw-semibold">Naziv kategorije</label>
+                        <label class="form-label fw-semibold required">Naziv kategorije</label>
                         <input asp-for="Name" class="form-control" />
                         <span asp-validation-for="Name" class="text-danger"></span>
                     </div>
@@ -35,3 +35,6 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
