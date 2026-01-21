@@ -98,6 +98,8 @@ namespace VideoKlub.Controllers
 
                 await _rateRepository.AddAsync(rate);
                 await _rateRepository.SaveAsync();
+                TempData["FavoriteMessage"] = "Uspešno ocenjen video sadržaj!";
+                TempData["FavoriteType"] = "success";
 
             }
             return RedirectToAction("Details", new { id = videoId });
