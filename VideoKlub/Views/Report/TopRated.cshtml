@@ -1,0 +1,28 @@
+﻿@model IEnumerable<VideoKlub.ViewModels.Reports.TopRatedVideosReportVM>
+<div class="container mt-5">
+    <div class="card card-flush">
+        <div class="card-header">
+            <h3 class="card-title">Najbolje ocenjeni sadržaji</h3>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Naslov</th>
+                        <th class="text-end">Prosečna ocena</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.VideoTitle</td>
+                            <td class="text-end">@item.AverageRating.ToString("0.00")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

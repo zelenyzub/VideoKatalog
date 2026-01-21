@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using VideoKlub.Data;
 using VideoKlub.Repositories.Interfaces;
 using VideoKlub.Repositories.Implementation;
+using VideoKlub.Repositories.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +29,8 @@ builder.Services.AddScoped<IRateRepository, RateRepository>();
 builder.Services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 //user repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+//report repository
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
 var app = builder.Build();
 

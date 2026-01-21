@@ -1,0 +1,36 @@
+﻿@model IEnumerable<VideoKlub.ViewModels.Reports.PopularVideosReportVM>
+
+<div class="container mt-5">
+    <div class="card card-flush">
+        <div class="card-header">
+            <h3 class="card-title">Najpopularniji sadržaji</h3>
+        </div>
+
+        <div class="card-body">
+            @if (ViewBag.Message != null)
+            {
+                <div class="alert alert-info">@ViewBag.Message</div>
+            }
+            else
+            {
+                <table class="table table-row-dashed table-row-gray-300 align-middle">
+                    <thead>
+                        <tr class="fw-bold text-muted">
+                            <th>Naslov</th>
+                            <th class="text-end">Broj favorita</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.VideoTitle</td>
+                                <td class="text-end">@item.FavoritesCount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>

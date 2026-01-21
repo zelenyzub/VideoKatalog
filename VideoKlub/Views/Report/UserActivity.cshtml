@@ -1,0 +1,30 @@
+﻿@model IEnumerable<VideoKlub.ViewModels.Reports.UserActivityReportVM>
+<div class="container mt-5">
+    <div class="card card-flush">
+        <div class="card-header">
+            <h3 class="card-title">Aktivnost korisnika</h3>
+        </div>
+
+        <div class="card-body">
+            <table class="table table-row-bordered">
+                <thead>
+                    <tr>
+                        <th>Email korisnika</th>
+                        <th class="text-end">Broj ocena</th>
+                        <th class="text-end">Broj omiljenih</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.UserEmail</td>
+                            <td class="text-end">@item.RatesCount</td>
+                            <td class="text-end">@item.FavoritesCount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
