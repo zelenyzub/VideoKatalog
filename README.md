@@ -1,9 +1,9 @@
-# ?? VideoKatalog
+# VideoKatalog
 
 
 ---
 
-## ?? Povla?enje projekta sa GitHub-a
+## Povla?enje projekta sa GitHub-a
 
 U terminalu izvršiti:
 
@@ -16,7 +16,7 @@ cd VideoKatalog
 
 ---
 
-## ?? Provera NuGet paketa i putanja do baze
+## Provera NuGet paketa i putanja do baze
 
 Pre nego što pokreneš projekat, proveri da li su instalirani svi potrebni NuGet paketi:
 
@@ -46,7 +46,7 @@ Proveriti da je **connection string** u `appsettings.json` ispravan, npr:
 
 ---
 
-## ?? Entity Framework migracije (OBAVEZNO)
+## Entity Framework migracije (OBAVEZNO)
 
 U **Visual Studio ? Tools ? NuGet Package Manager ? Package Manager Console**:
 
@@ -62,11 +62,11 @@ Ovim se:
 
 ---
 
-## ??? Podešavanje baze podataka (SQL Server)
+## Podešavanje baze podataka (SQL Server)
 
 Aplikacija koristi bazu podataka `VideoKatalogDb`.
 
-### 1?? Pokretanje SQL skripte
+### Pokretanje SQL skripte
 
 U **SQL Server Management Studio (SSMS)**:
 
@@ -76,7 +76,7 @@ U **SQL Server Management Studio (SSMS)**:
 
 ---
 
-## ?? Automatski kreirani korisnici
+## Automatski kreirani korisnici
 
 Prilikom **prvog pokretanja aplikacije**, generišu se:
 
@@ -89,7 +89,7 @@ Prilikom **prvog pokretanja aplikacije**, generišu se:
 
 ---
 
-## ?? Pokretanje aplikacije
+##  Pokretanje aplikacije
 
 * Klikom na **Run** u Visual Studio-u
 
@@ -98,7 +98,7 @@ Prilikom **prvog pokretanja aplikacije**, generišu se:
 
 ---
 
-## ?? Napomene
+## Napomene
 
 * Migracije se pokre?u samo prvi put ili kada se model menja
 * SQL Server mora biti aktivan pre startovanja aplikacije
@@ -106,7 +106,7 @@ Prilikom **prvog pokretanja aplikacije**, generišu se:
 
 ---
 
-## ??? Tehnologije
+## Tehnologije
 
 * ASP.NET Core MVC
 * Entity Framework Core
