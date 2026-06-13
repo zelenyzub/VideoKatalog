@@ -1,0 +1,126 @@
+﻿@model VideoKlub.Models.RegisterViewModel
+
+<div class="d-flex flex-column flex-root">
+
+    <div class="d-flex flex-column flex-column-fluid justify-content-center align-items-center">
+
+        <div class="w-lg-500px p-10">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body p-10">
+
+                    <div class="text-center mb-10">
+
+                        <h1 class="text-dark fw-bolder mb-3">
+                            Registracija
+                        </h1>
+
+                        <div class="text-gray-500 fw-semibold fs-6">
+                            Kreirajte novi nalog
+                        </div>
+
+                    </div>
+
+                    <form asp-action="Register" method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-5">
+                        </div>
+
+                        <div class="fv-row mb-8">
+
+                            <label class="form-label fw-bold text-dark">
+                                Ime
+                            </label>
+
+                            <input asp-for="Ime"
+                                   class="form-control form-control-solid"
+                                   placeholder="Unesite ime" />
+
+                            <span asp-validation-for="Ime"
+                                  class="text-danger"></span>
+
+                        </div>
+
+                        <div class="fv-row mb-8">
+
+                            <label class="form-label fw-bold text-dark">
+                                Email adresa
+                            </label>
+
+                            <input asp-for="Email"
+                                   class="form-control form-control-solid"
+                                   placeholder="Unesite email" />
+
+                            <span asp-validation-for="Email"
+                                  class="text-danger"></span>
+
+                        </div>
+
+                        <div class="fv-row mb-8">
+
+                            <label class="form-label fw-bold text-dark">
+                                Lozinka
+                            </label>
+
+                            <input asp-for="Password"
+                                   type="password"
+                                   class="form-control form-control-solid"
+                                   placeholder="Unesite lozinku" />
+
+                            <span asp-validation-for="Password"
+                                  class="text-danger"></span>
+
+                        </div>
+
+                        <div class="fv-row mb-8">
+
+                            <label class="form-label fw-bold text-dark">
+                                Potvrda lozinke
+                            </label>
+
+                            <input asp-for="ConfirmPassword"
+                                   type="password"
+                                   class="form-control form-control-solid"
+                                   placeholder="Ponovite lozinku" />
+
+                            <span asp-validation-for="ConfirmPassword"
+                                  class="text-danger"></span>
+
+                        </div>
+
+                        <div class="d-grid mb-8">
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Registruj se
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                    <div class="text-center">
+
+                        <span class="text-gray-500">
+                            Već imate nalog?
+                        </span>
+
+                        <a asp-controller="Account"
+                           asp-action="Login"
+                           class="link-primary fw-bold ms-2">
+                            Prijavite se
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

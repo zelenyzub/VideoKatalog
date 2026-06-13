@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace VideoKlub.Controllers
 {
-    [Authorize]
+
     public class VideoController : Controller
     {
         private readonly IVideoRepository _videoRepository;
@@ -50,7 +50,7 @@ namespace VideoKlub.Controllers
 
             return View("Index", videos);
         }
-
+        [Authorize]
         public async Task<IActionResult> Details(int id)
         {
             var video = await _videoRepository.GetByIdWithCategoryAsync(id);
@@ -74,7 +74,7 @@ namespace VideoKlub.Controllers
             ViewBag.UserHasRated = userRate != null;
             return View(video);
         }
-
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RateVideo(int videoId, int value)

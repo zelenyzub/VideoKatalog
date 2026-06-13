@@ -13,14 +13,21 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link href="/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
     <link href="/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+    <script>
+            (function () {
+                let theme = localStorage.getItem("data-bs-theme");
+
+                if (!theme) {
+                    theme = "light";
+                    localStorage.setItem("data-bs-theme", theme);
+                }
+
+                document.documentElement.setAttribute("data-bs-theme", theme);
+            })();
+    </script>
 </head>
 
 <body id="kt_body" class="header-fixed" style="--kt-toolbar-height:55px;">
-    <script>
-        document.documentElement.setAttribute('data-bs-theme', 'light');
-        try { localStorage.setItem('data-bs-theme', 'light'); } catch(e){}
-    </script>
-
     <div class="d-flex flex-column flex-root">
         <div class="page d-flex flex-row flex-column-fluid">
             <div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
@@ -29,7 +36,7 @@
                 <div id="kt_header" class="header align-items-stretch">
                     <div class="container-fluid d-flex align-items-stretch justify-content-between">
                         <div class="d-flex align-items-center flex-grow-1">
-                            <a asp-controller="Home" asp-action="Index" class="d-flex align-items-center me-5">
+                            <a asp-controller="Video" asp-action="Index" class="d-flex align-items-center me-5">
                                 <span class="fw-bold fs-4 text-white">Video katalog</span>
                             </a>
                             @if(User.Identity != null && User.Identity.IsAuthenticated)
@@ -211,8 +218,15 @@
     <script src="/assets/plugins/global/plugins.bundle.js"></script>
     <script src="/assets/js/scripts.bundle.js"></script>
     <script>
-        document.documentElement.setAttribute('data-bs-theme', 'light');
-        try { localStorage.setItem('data-bs-theme', 'light'); } catch(e){}
+        document.addEventListener("click", function (e) {
+        const el = e.target.closest("[data-kt-element='mode']");
+        if (!el) return;
+
+        const mode = el.getAttribute("data-kt-value");
+
+        localStorage.setItem("data-bs-theme", mode);
+        document.documentElement.setAttribute("data-bs-theme", mode);
+        });
     </script>
     <script src="~/js/toastr-handler.js"></script>
 
