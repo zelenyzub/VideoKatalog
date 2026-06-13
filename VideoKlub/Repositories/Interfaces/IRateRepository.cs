@@ -6,5 +6,6 @@ namespace VideoKlub.Repositories.Interfaces
     {
         Task<double> GetAverageRatingAsync(int videoId);
         Task<Rate> GetUserRatingForVideoAsync(string userId, int videoId);
+        Task<IEnumerable<Rate>> GetUserRatesWithCategoryAsync(string userId);
     }
 }

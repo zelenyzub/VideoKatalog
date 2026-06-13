@@ -25,5 +25,14 @@ namespace VideoKlub.Repositories.Implementation
             return await _context.Rates
                 .FirstOrDefaultAsync(r => r.UserId == userId && r.VideoId == videoId);
         }
+
+        public async Task<IEnumerable<Rate>> GetUserRatesWithCategoryAsync(string userId)
+        {
+            return await _context.Rates
+                .Include(r => r.Video)
+                .ThenInclude(v => v.Category)
+                .Where(r => r.UserId == userId)
+                .ToListAsync();
+        }
     }
 }

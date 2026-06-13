@@ -18,14 +18,80 @@
 
         <!-- BODY -->
         <div class="card-body pt-0">
+            <div class="row mb-6">
+                <div class="col-lg-12">
+                    <form method="get" asp-action="Index" class="row gx-3 gy-4 align-items-end">
+                        <div class="col-sm-4">
+                            <label class="form-label">Pretraga</label>
+                            <input type="text" name="searchQuery" value="@(ViewBag.SearchQuery ?? string.Empty)" class="form-control form-control-solid" placeholder="Pretraži po naslovu ili opisu" />
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Kategorija</label>
+                            <select name="categoryId" class="form-select form-select-solid">
+                                <option value="">Sve kategorije</option>
+                                @foreach (var category in (IEnumerable<VideoKlub.Models.Category>)ViewBag.Categories)
+                                {
+                                    @if (ViewBag.SelectedCategoryId != null && ViewBag.SelectedCategoryId == category.Id)
+                                    {
+                                        <option value="@category.Id" selected="selected">@category.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@category.Id">@category.Name</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label class="form-label">Status</label>
+                            <select name="statusFilter" class="form-select form-select-solid">
+                                @if (string.Equals(ViewBag.StatusFilter as string, "all", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <option value="all" selected="selected">Svi</option>
+                                }
+                                else
+                                {
+                                    <option value="all">Svi</option>
+                                }
+                                @if (string.Equals(ViewBag.StatusFilter as string, "active", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <option value="active" selected="selected">Aktivni</option>
+                                }
+                                else
+                                {
+                                    <option value="active">Aktivni</option>
+                                }
+                                @if (string.Equals(ViewBag.StatusFilter as string, "inactive", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <option value="inactive" selected="selected">Neaktivni</option>
+                                }
+                                else
+                                {
+                                    <option value="inactive">Neaktivni</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-2 d-flex flex-column gap-3 align-items-end">
+                            <button type="submit" class="btn btn-light-primary w-100">
+                                <i class="ki-outline ki-filter-search fs-2 me-1"></i>
+                                Filtriraj
+                            </button>
+                            <a href="@Url.Action("Index", "Dashboard")" class="btn btn-light-danger w-100">
+                                <i class="ki-outline ki-cross-square fs-2 me-1"></i>
+                                Poništi
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
             @if (!Model.Any())
             {
-                <!-- Metronic info alert za praznu tabelu videa -->
                 <div class="alert alert-info d-flex align-items-center p-5 mb-10">
                     <i class="ki-outline ki-information fs-2hx me-4"></i>
                     <div class="d-flex flex-column">
                         <h4 class="mb-1">Nema video sadržaja</h4>
-                        <span>Trenutno nema dodanih video zapisa u sistemu.</span>
+                        <span>Trenutno nema zapisa koji odgovaraju filtrovanju.</span>
                     </div>
                 </div>
             }
@@ -40,13 +106,14 @@
                                 <th>Trajanje</th>
                                 <th>URL</th>
                                 <th>Kategorija</th>
+                                <th>Status</th>
                                 <th class="text-end">Akcije</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var video in Model)
                             {
-                                <tr class="@(video.IsActive ? "" : "bg-light-danger")">
+                                <tr class="@(video.IsActive ? string.Empty : "bg-light-danger")">
                                     <td class="fw-bold text-gray-800">@video.Title</td>
                                     <td class="text-gray-700" style="max-width: 250px; white-space: normal; word-break: break-word;">
                                         @(string.IsNullOrWhiteSpace(video.Description) ? "-" : video.Description)
@@ -64,6 +131,16 @@
                                     </td>
                                     <td>
                                         <span class="badge badge-light-primary fw-semibold">@video.Category?.Name</span>
+                                    </td>
+                                    <td>
+                                        @if (video.IsActive)
+                                        {
+                                            <span class="badge badge-light-success">Aktivan</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-light-danger">Neaktivan</span>
+                                        }
                                     </td>
                                     <td class="text-end">
                                         <a asp-controller="Video" asp-action="Details" asp-route-id="@video.Id"
@@ -88,13 +165,36 @@
                         </tbody>
                     </table>
                 </div>
+
+                @if ((int?)(ViewBag.TotalPages ?? 0) > 1)
+                {
+                    var currentPage = (int?)(ViewBag.PageNumber ?? 1) ?? 1;
+                    var totalPages = (int?)(ViewBag.TotalPages ?? 1) ?? 1;
+                    <div class="d-flex flex-stack mt-8">
+                        <div class="text-muted">Prikazano @Model.Count() od ukupno @ViewBag.TotalItems zapisa.</div>
+                        <ul class="pagination pagination-circle pagination-outline">
+                            <li class="page-item @(currentPage == 1 ? "disabled" : string.Empty)">
+                                <a class="page-link" href="@Url.Action("Index", new { searchQuery = ViewBag.SearchQuery, categoryId = ViewBag.SelectedCategoryId, statusFilter = ViewBag.StatusFilter, pageNumber = currentPage - 1 })">Prethodna</a>
+                            </li>
+                            @for (var i = 1; i <= totalPages; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : string.Empty)">
+                                    <a class="page-link" href="@Url.Action("Index", new { searchQuery = ViewBag.SearchQuery, categoryId = ViewBag.SelectedCategoryId, statusFilter = ViewBag.StatusFilter, pageNumber = i })">@i</a>
+                                </li>
+                            }
+                            <li class="page-item @(currentPage == totalPages ? "disabled" : string.Empty)">
+                                <a class="page-link" href="@Url.Action("Index", new { searchQuery = ViewBag.SearchQuery, categoryId = ViewBag.SelectedCategoryId, statusFilter = ViewBag.StatusFilter, pageNumber = currentPage + 1 })">Sledeća</a>
+                            </li>
+                        </ul>
+                    </div>
+                }
             }
         </div>
 
     </div>
 
     <div class="row mt-5">
-        <div class="col-md-6">
+        <div class="col-lg-4 col-md-6">
             <div class="card card-flush shadow-sm">
                 <div class="card-header align-items-center">
                     <h3 class="card-title fw-bold">
@@ -161,9 +261,12 @@
             </div>
         </div>
 
-        <div class="col-md-6">
-            @await Html.PartialAsync("~/Views/User/_UserTablePartial.cshtml", (IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>)ViewBag.Users)
-        </div>
+        @if (User.IsInRole("Admin") && ViewBag.Users != null)
+        {
+            <div class="col-lg-8 col-md-6">
+                @await Html.PartialAsync("~/Views/User/_UserTablePartial.cshtml", (IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>)ViewBag.Users)
+            </div>
+        }
     </div>
 
     @await Html.PartialAsync("~/Views/Category/_AddCategoryModal.cshtml", new VideoKlub.Models.Category())

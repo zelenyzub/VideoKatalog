@@ -4,7 +4,7 @@ using VideoKlub.Repositories.Interfaces;
 
 namespace VideoKlub.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Moderator")]
     public class ReportController : Controller
     {
         private readonly IReportRepository _reportRepository;

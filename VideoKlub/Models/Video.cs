@@ -29,7 +29,9 @@ namespace VideoKlub.Models
         public bool IsFavorite { get; set; } = false;
 
         [NotMapped]
-        [Required(ErrorMessage = "Morate izabrati sliku za video.")]
+        public string? ImageUrl { get; set; }
+
+        [NotMapped]
         public IFormFile? ImageFile { get; set; }
     }
 }

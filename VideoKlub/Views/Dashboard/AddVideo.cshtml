@@ -9,30 +9,45 @@
         <div class="card-body">
             <form asp-controller="Dashboard" asp-action="AddVideo" method="post" enctype="multipart/form-data" class="form">
 
+                <div class="mb-5 border rounded p-4 bg-light">
+                    <h5 class="mb-3">OMDb API pretraga</h5>
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-8">
+                            <input id="omdbSearchInput" type="text" class="form-control form-control-solid" placeholder="Pretraži OMDb po naslovu" />
+                        </div>
+                        <div class="col-md-4">
+                            <button id="omdbSearchButton" type="button" class="btn btn-primary w-100">Pretraži OMDb</button>
+                        </div>
+                    </div>
+                    <div id="omdbSearchResults" class="mt-4"></div>
+                </div>
+
+                <input asp-for="ImageUrl" id="ImageUrl" type="hidden" />
+
                 <!-- Naslov -->
                 <div class="mb-5">
                     <label asp-for="Title" class="form-label required">Naslov videa</label>
-                    <input asp-for="Title" class="form-control form-control-solid" placeholder="Unesite naslov videa" />
+                    <input asp-for="Title" id="Title" class="form-control form-control-solid" placeholder="Unesite naslov videa" />
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
 
                 <!-- Opis -->
                 <div class="mb-5">
                     <label asp-for="Description" class="form-label">Opis</label>
-                    <textarea asp-for="Description" class="form-control form-control-solid" rows="4" placeholder="Unesite opis videa"></textarea>
+                    <textarea asp-for="Description" id="Description" class="form-control form-control-solid" rows="4" placeholder="Unesite opis videa"></textarea>
                 </div>
 
                 <!-- Trajanje -->
                 <div class="mb-5">
                     <label asp-for="Duration" class="form-label required">Trajanje</label>
-                    <input asp-for="Duration" class="form-control form-control-solid" placeholder="Unesite trajanje (npr. 02:30)" />
+                    <input asp-for="Duration" id="Duration" class="form-control form-control-solid" placeholder="Unesite trajanje (npr. 02:30)" />
                     <span asp-validation-for="Duration" class="text-danger"></span>
                 </div>
 
                 <!-- URL -->
                 <div class="mb-5">
                     <label asp-for="URL" class="form-label">Video URL</label>
-                    <input asp-for="URL" class="form-control form-control-solid" placeholder="Unesite link ka videu" />
+                    <input asp-for="URL" id="URL" class="form-control form-control-solid" placeholder="Unesite link ka videu" />
                 </div>
 
                 <!-- Kategorija -->
@@ -46,16 +61,28 @@
 
                 <!-- Slika -->
                 <div class="mb-5">
-                    <label asp-for="ImageFile" class="form-label required">Slika videa</label>
+                    <label asp-for="ImageFile" class="form-label">Slika videa</label>
                     <input asp-for="ImageFile" type="file" class="form-control form-control-solid" />
                     <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
 
-                <!-- Aktivno -->
-                <div class="mb-5 form-check form-switch">
-                    <input asp-for="IsActive" class="form-check-input" type="checkbox" id="IsActive">
-                    <label class="form-check-label" for="IsActive">Aktivan</label>
-                </div>
+                @if (User.IsInRole("Moderator"))
+                {
+                    <input asp-for="IsActive" type="hidden" value="false" />
+                    <div class="mb-5">
+                        <label class="form-label">Status</label>
+                        <div class="form-text text-muted">
+                            Moderator može dodavati sadržaj, ali ne može ga odmah postaviti kao aktivan. Sadržaj će biti sačuvan kao neaktivan.
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="mb-5 form-check form-switch">
+                        <input asp-for="IsActive" class="form-check-input" type="checkbox" id="IsActive">
+                        <label class="form-check-label" for="IsActive">Aktivan</label>
+                    </div>
+                }
 
                 <div class="d-flex justify-content-end">
                     <a asp-action="Index" class="btn btn-light me-3">Odustani</a>
@@ -69,4 +96,94 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('omdbSearchButton').addEventListener('click', async function () {
+            const query = document.getElementById('omdbSearchInput').value.trim();
+            const resultsContainer = document.getElementById('omdbSearchResults');
+            resultsContainer.innerHTML = '';
+
+            if (!query) {
+                resultsContainer.innerHTML = '<div class="alert alert-warning">Unesite naslov za pretragu.</div>';
+                return;
+            }
+
+            const response = await fetch(`/Dashboard/SearchOmdb?query=${encodeURIComponent(query)}`);
+            if (!response.ok) {
+                let errorMessage = await response.text();
+                try {
+                    const jsonError = JSON.parse(errorMessage);
+                    errorMessage = jsonError.error ?? errorMessage;
+                } catch {
+                    // ignore non-json error body
+                }
+                resultsContainer.innerHTML = `<div class="alert alert-danger">Greška prilikom pretrage OMDb: ${errorMessage}</div>`;
+                return;
+            }
+
+            const results = await response.json();
+            if (!results || results.length === 0) {
+                resultsContainer.innerHTML = '<div class="alert alert-info">Nema rezultata.</div>';
+                return;
+            }
+
+            const list = document.createElement('div');
+            list.className = 'row row-cols-1 row-cols-md-2 g-3';
+
+            results.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'col';
+                card.innerHTML = `
+                    <div class="card h-100">
+                        <img src="${item.Poster !== 'N/A' ? item.Poster : 'https://via.placeholder.com/300x445?text=No+Image'}" class="card-img-top" alt="${item.Title}" style="height: 250px; object-fit: cover;" />
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${item.Title}</h5>
+                            <p class="card-text mb-2">Godina: ${item.Year}</p>
+                            <button type="button" class="btn btn-primary mt-auto" data-imdbid="${item.imdbID}">Popuni</button>
+                        </div>
+                    </div>
+                `;
+                list.appendChild(card);
+            });
+
+            resultsContainer.appendChild(list);
+
+            resultsContainer.querySelectorAll('button[data-imdbid]').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const imdbId = btn.getAttribute('data-imdbid');
+                    const detailsResponse = await fetch(`/Dashboard/GetOmdbDetails?imdbId=${encodeURIComponent(imdbId)}`);
+                    if (!detailsResponse.ok) {
+                        alert('Greška pri učitavanju podataka sa OMDb.');
+                        return;
+                    }
+                    const movie = await detailsResponse.json();
+
+                    if (!movie) {
+                        alert('Neuspešno učitavanje podataka.');
+                        return;
+                    }
+
+                    const title = movie.Title || movie.title || '';
+                    const plot = movie.Plot || movie.plot || '';
+                    const runtime = movie.Runtime || movie.runtime || '';
+                    const imdbKey = movie.imdbID || movie.imdbId || movie.imdbid || imdbId;
+                    const poster = movie.Poster || movie.poster || '';
+
+                    document.getElementById('Title').value = title;
+                    document.getElementById('Description').value = plot;
+                    document.getElementById('Duration').value = runtime;
+                    document.getElementById('URL').value = imdbKey ? `https://www.imdb.com/title/${imdbKey}` : '';
+                    document.getElementById('ImageUrl').value = poster;
+
+                    const formSection = document.querySelector('form');
+                    if (formSection) {
+                        formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        const titleField = document.getElementById('Title');
+                        if (titleField) {
+                            titleField.focus();
+                        }
+                    }
+                });
+            });
+        });
+    </script>
 }

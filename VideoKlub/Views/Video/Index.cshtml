@@ -46,25 +46,40 @@
             @foreach (var v in Model)
             {
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a asp-controller="Video" asp-action="Details" asp-route-id="@v.Id" class="text-decoration-none">
-                        <div class="card card-flush h-100 video-card hover-scale cursor-pointer shadow-sm">
-                            <div class="card-body p-0">
-                                <div class="overlay-wrapper">
-                                    <img src="~/@v.ImagePath"
-                                         class="w-100 rounded"
-                                         style="height:260px; object-fit:cover;" />
-                                </div>
+                    <div class="card card-flush h-100 video-card hover-scale shadow-sm position-relative">
+                        <div class="card-body p-0">
+                            <div class="overlay-wrapper">
+                                <img src="~/@v.ImagePath"
+                                     class="w-100 rounded"
+                                     style="height:260px; object-fit:cover;" />
                             </div>
-                            <div class="card-footer px-3 py-2">
-                                <div class="fw-bold text-gray-900 text-truncate">
+                        </div>
+                        <div class="card-footer px-3 py-2 d-flex align-items-center gap-2" style="min-height:80px;">
+                            <div class="flex-grow-1" style="min-width:0;">
+                                <div class="fw-bold text-gray-900 text-truncate" style="min-width:0;">
                                     @v.Title
                                 </div>
-                                <div class="text-muted fs-7">
+                                <div class="text-muted fs-7 text-truncate" style="min-width:0;">
                                     @v.Category.Name
                                 </div>
                             </div>
+                            <form asp-controller="Favorite" asp-action="Toggle" method="post" class="m-0 flex-shrink-0" style="position:relative; z-index:2;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="videoId" value="@v.Id" />
+                                <button type="submit" class="btn btn-icon btn-sm btn-light-danger shadow-sm">
+                                    @if (v.IsFavorite)
+                                    {
+                                        <i class="ki-solid ki-heart fs-2 text-danger"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="ki-outline ki-heart fs-2 text-danger"></i>
+                                    }
+                                </button>
+                            </form>
                         </div>
-                    </a>
+                        <a asp-controller="Video" asp-action="Details" asp-route-id="@v.Id" class="stretched-link"></a>
+                    </div>
                 </div>
             }
         </div>
@@ -107,10 +122,18 @@ else
         <div class="mb-8">
             <div class="d-flex justify-content-between align-items-center">
                 <div>
-                    <h3 class="mb-0">Pronađite svoj omiljeni video sadržaj</h3>
-                    <p class="text-muted fs-6 mt-2">
-                        Dostupno je <span class="fw-bold text-primary">@Model.Count()</span> video sadržaja
-                    </p>
+                    @if (ViewData["PageHeading"] != null)
+                    {
+                        <h3 class="mb-0">@ViewData["PageHeading"]</h3>
+                        <p class="text-muted fs-6 mt-2">@ViewData["PageSubheading"]</p>
+                    }
+                    else
+                    {
+                        <h3 class="mb-0">Pronađite svoj omiljeni video sadržaj</h3>
+                        <p class="text-muted fs-6 mt-2">
+                            Dostupno je <span class="fw-bold text-primary">@Model.Count()</span> video sadržaja
+                        </p>
+                    }
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
@@ -170,25 +193,40 @@ else
             @foreach (var v in Model)
             {
                 <div class="col-xl-2 col-lg-2 col-md-3 col-sm-4 col-6">
-                    <a asp-controller="Video" asp-action="Details" asp-route-id="@v.Id" class="text-decoration-none">
-                        <div class="card card-flush h-100 video-card hover-scale cursor-pointer shadow-sm">
-                            <div class="card-body p-0">
-                                <div class="overlay-wrapper">
-                                    <img src="~/@v.ImagePath"
-                                         class="w-100 rounded"
-                                         style="height:260px; object-fit:cover;" />
-                                </div>
+                    <div class="card card-flush h-100 video-card hover-scale shadow-sm position-relative">
+                        <div class="card-body p-0">
+                            <div class="overlay-wrapper">
+                                <img src="~/@v.ImagePath"
+                                     class="w-100 rounded"
+                                     style="height:260px; object-fit:cover;" />
                             </div>
-                            <div class="card-footer px-3 py-2">
-                                <div class="fw-bold text-gray-900 text-truncate">
+                        </div>
+                        <div class="card-footer px-3 py-2 d-flex align-items-center gap-2" style="min-height:80px;">
+                            <div class="flex-grow-1" style="min-width:0;">
+                                <div class="fw-bold text-gray-900 text-truncate" style="min-width:0;">
                                     @v.Title
                                 </div>
-                                <div class="text-muted fs-7">
+                                <div class="text-muted fs-7 text-truncate" style="min-width:0;">
                                     @v.Category.Name
                                 </div>
                             </div>
+                            <form asp-controller="Favorite" asp-action="Toggle" method="post" class="m-0 flex-shrink-0" style="position:relative; z-index:2;">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="videoId" value="@v.Id" />
+                                <button type="submit" class="btn btn-icon btn-sm btn-light-danger shadow-sm">
+                                    @if (v.IsFavorite)
+                                    {
+                                        <i class="ki-solid ki-heart fs-2 text-danger"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="ki-outline ki-heart fs-2 text-danger"></i>
+                                    }
+                                </button>
+                            </form>
                         </div>
-                    </a>
+                        <a asp-controller="Video" asp-action="Details" asp-route-id="@v.Id" class="stretched-link"></a>
+                    </div>
                 </div>
             }
         </div>

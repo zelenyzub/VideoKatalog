@@ -6,7 +6,7 @@ using VideoKlub.Repositories.Interfaces;
 
 namespace VideoKlub.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Moderator")]
     public class CategoryController : Controller
     {
         private readonly ICategoryRepository _categoryRepository;

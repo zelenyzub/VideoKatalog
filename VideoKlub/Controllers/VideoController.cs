@@ -22,6 +22,10 @@ namespace VideoKlub.Controllers
         public async Task<IActionResult> Index()
         {
             var videos = await _videoRepository.GetAllWithCategoryAsync();
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                await MarkFavoritesAsync(videos);
+            }
             return View(videos);
         }
 
@@ -33,8 +37,85 @@ namespace VideoKlub.Controllers
             }
 
             var videos = await _videoRepository.SearchByTitleOrDescriptionAsync(query);
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                await MarkFavoritesAsync(videos);
+            }
             ViewData["SearchQuery"] = query;
             return View("Index", videos);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Recommended()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var favorites = await _favoriteRepository.GetUserFavoritesAsync(userId);
+            var ratedVideos = await _rateRepository.GetUserRatesWithCategoryAsync(userId);
+
+            var ratedVideoIds = ratedVideos.Select(r => r.VideoId).Distinct().ToHashSet();
+
+            var categoryScores = new Dictionary<int, double>();
+
+            var favoriteCategoryGroups = favorites
+                .Where(f => f.Video?.Category != null)
+                .GroupBy(f => f.Video.CategoryId);
+
+            foreach (var group in favoriteCategoryGroups)
+            {
+                categoryScores[group.Key] = categoryScores.GetValueOrDefault(group.Key) + group.Count() * 2;
+            }
+
+            var ratedCategoryGroups = ratedVideos
+                .Where(r => r.Video?.Category != null)
+                .GroupBy(r => r.Video.CategoryId)
+                .Select(g => new
+                {
+                    CategoryId = g.Key,
+                    AvgRating = g.Average(r => r.Value)
+                });
+
+            foreach (var group in ratedCategoryGroups)
+            {
+                categoryScores[group.CategoryId] = categoryScores.GetValueOrDefault(group.CategoryId) + group.AvgRating;
+            }
+
+            var allVideos = (await _videoRepository.GetAllWithCategoryAsync())
+                .Where(v => v.IsActive && !ratedVideoIds.Contains(v.Id))
+                .ToList();
+
+            IEnumerable<Video> recommended;
+            if (categoryScores.Any())
+            {
+                recommended = allVideos
+                    .Where(v => categoryScores.ContainsKey(v.CategoryId))
+                    .OrderByDescending(v => categoryScores[v.CategoryId])
+                    .ThenBy(v => v.Title)
+                    .ToList();
+
+                if (!recommended.Any())
+                {
+                    recommended = allVideos
+                        .OrderByDescending(v => categoryScores.GetValueOrDefault(v.CategoryId))
+                        .ThenBy(v => v.Title)
+                        .ToList();
+                }
+            }
+            else
+            {
+                recommended = allVideos.OrderBy(v => v.Title).ToList();
+            }
+
+            await MarkFavoritesAsync(recommended);
+
+            ViewData["PageHeading"] = "Preporučeno za vas";
+            ViewData["PageSubheading"] = $"Sadržaji koje vam sistem preporučuje na osnovu vaših omiljenih i ocenjenih kategorija.";
+
+            return View("Index", recommended);
         }
 
         public async Task<IActionResult> FilterByCategory(int[] categoryIds)
@@ -44,11 +125,32 @@ namespace VideoKlub.Controllers
                 return RedirectToAction("Index");
             }
             var videos = await _videoRepository.GetByCategoryAsync(categoryIds);
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                await MarkFavoritesAsync(videos);
+            }
 
             ViewData["FilterActive"] = true;
             ViewData["SelectedCategories"] = categoryIds;
 
             return View("Index", videos);
+        }
+
+        private async Task MarkFavoritesAsync(IEnumerable<Video> videos)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return;
+            }
+
+            var favorites = await _favoriteRepository.GetUserFavoritesAsync(userId);
+            var favoriteIds = favorites.Select(f => f.VideoId).ToHashSet();
+
+            foreach (var video in videos)
+            {
+                video.IsFavorite = favoriteIds.Contains(video.Id);
+            }
         }
         [Authorize]
         public async Task<IActionResult> Details(int id)

@@ -54,8 +54,9 @@
                                         @Html.AntiForgeryToken()
                                         <input type="hidden" name="userId" value="@user.Id" />
                                         <select name="newRole" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
-                                            <option value="User" selected="@(userRole == "User" ? "selected" : null)">User</option>
-                                            <option value="Admin" selected="@(userRole == "Admin" ? "selected" : null)">Admin</option>
+                                            <option value="User" selected="@(userRole == "User" ? "selected" : null)">Korisnik</option>
+                                            <option value="Moderator" selected="@(userRole == "Moderator" ? "selected" : null)">Moderator</option>
+                                            <option value="Admin" selected="@(userRole == "Admin" ? "selected" : null)">Administrator</option>
                                         </select>
                                     </form>
                                 </td>

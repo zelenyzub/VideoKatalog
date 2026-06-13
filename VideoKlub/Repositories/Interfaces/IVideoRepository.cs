@@ -11,5 +11,6 @@ namespace VideoKlub.Repositories.Interfaces
         Task<IEnumerable<Video>> SearchByTitleOrDescriptionAsync(string query);
         Task<IEnumerable<Video>> GetByCategoryAsync(int[] categoryIds);
         Task<IEnumerable<Video>> GetAllWithCategoryAdminAsync();
+        Task<(IEnumerable<Video> Videos, int TotalCount)> GetFilteredVideosAsync(string searchQuery, int? categoryId, string statusFilter, int pageNumber, int pageSize);
     }
 }

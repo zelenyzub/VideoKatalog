@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using VideoKlub.Data;
+using VideoKlub.Models;
 using VideoKlub.Repositories.Interfaces;
 using VideoKlub.Repositories.Implementation;
 using VideoKlub.Repositories.Implementations;
@@ -37,6 +38,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 //report repository
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
 
+builder.Services.AddHttpClient<IOmdbRepository, OmdbRepository>();
+builder.Services.Configure<OmdbSettings>(builder.Configuration.GetSection("OmdbApi"));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,7 +74,7 @@ using(var scope = app.Services.CreateScope())
 {
     //ADMIN & USER ROLES SEEED
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var roles = new[] { "Admin", "User" };
+    var roles = new[] { "Admin", "Moderator", "User" };
 
     foreach(var role in roles)
     {
@@ -118,6 +122,23 @@ using (var scope = app.Services.CreateScope())
 
         await userManager.CreateAsync(regularUser, userPassword);
         await userManager.AddToRoleAsync(regularUser, "User");
+    }
+
+    // ----- MODERATOR -----
+    string moderatorEmail = "moderator@gmail.com";
+    string moderatorPassword = "Moderator123!";
+
+    if (await userManager.FindByEmailAsync(moderatorEmail) == null)
+    {
+        var moderatorUser = new IdentityUser
+        {
+            UserName = moderatorEmail,
+            Email = moderatorEmail,
+            EmailConfirmed = true
+        };
+
+        await userManager.CreateAsync(moderatorUser, moderatorPassword);
+        await userManager.AddToRoleAsync(moderatorUser, "Moderator");
     }
 }
 

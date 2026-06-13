@@ -49,11 +49,16 @@
                                             </a>
                                         </div>
                                         <div class="menu-item me-0 me-lg-2">
+                                            <a asp-controller="Video" asp-action="Recommended" class="menu-link px-3 py-2 text-white text-hover-primary">
+                                                <span class="menu-title"><i class="ki-solid ki-star fs-2 me-2"></i> Preporučeno za vas</span>
+                                            </a>
+                                        </div>
+                                        <div class="menu-item me-0 me-lg-2">
                                             <a asp-controller="Favorite" asp-action="Index" class="menu-link px-3 py-2 text-white text-hover-primary">
                                                 <span class="menu-title"><i class="ki-solid ki-heart fs-2 me-2"></i> Omiljeni Sadržaj</span>
                                             </a>
                                         </div>
-                                        @if (User.IsInRole("Admin"))
+                                        @if (User.IsInRole("Admin") || User.IsInRole("Moderator"))
                                         {
                                             <div class="menu-item me-0 me-lg-2"
                                                  data-kt-menu-trigger="hover"
@@ -64,7 +69,14 @@
                                                    class="menu-link px-3 py-2 text-white text-hover-primary">
                                                     <span class="menu-title">
                                                         <i class="ki-solid ki-security-user fs-2 me-2"></i>
-                                                        Admin Options
+                                                        @if (User.IsInRole("Admin"))
+                                                        {
+                                                            @:Admin Opcije
+                                                        }
+                                                        else
+                                                        {
+                                                            @:Moderator Opcije
+                                                        }
                                                     </span>
                                                     <span class="menu-arrow"></span>
                                                 </a>
@@ -80,7 +92,7 @@
                                                             <span class="menu-icon">
                                                                 <i class="ki-solid ki-burger-menu-2 fs-2"></i>
                                                             </span>
-                                                            <span class="menu-title">Admin Panel</span>
+                                                            <span class="menu-title">Upravljanje sadržajem</span>
                                                         </a>
                                                     </div>
 
@@ -173,6 +185,10 @@
                                                                     {
                                                                         <span class="badge badge-light-danger fw-bold fs-8 px-2 py-1 ms-2">Administrator</span>
                                                                     }
+                                                                    else if (User.IsInRole("Moderator"))
+                                                                    {
+                                                                        <span class="badge badge-light-warning fw-bold fs-8 px-2 py-1 ms-2">Moderator</span>
+                                                                    }
                                                                     else
                                                                     {
                                                                         <span class="badge badge-light-primary fw-bold fs-8 px-2 py-1 ms-2">Korisnik</span>
@@ -181,10 +197,19 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="menu-item px-5">
+                                                    <a asp-controller="Account" asp-action="ProfileSettings" class="menu-link px-5 d-flex align-items-center">
+                                                        <span class="menu-icon"><i class="ki-solid ki-gear fs-2x"></i></span>
+                                                        <span class="menu-title ms-2">Podešavanje profila</span>
+                                                    </a>
+                                                </div>
                                                 <div class="separator my-2"></div>
-                                                <button type="submit" class="menu-link px-5 border-0 bg-transparent" style="cursor: pointer;">
-                                                    <i class="ki-solid ki-exit-right fs-2x me-2"></i> Odjavi se
-                                                </button>
+                                                <div class="menu-item px-5">
+                                                    <button type="submit" class="menu-link px-5 border-0 bg-transparent d-flex align-items-center" style="cursor: pointer;">
+                                                        <span class="menu-icon"><i class="ki-solid ki-exit-right fs-2x"></i></span>
+                                                        <span class="menu-title ms-2">Odjavi se</span>
+                                                    </button>
+                                                </div>
                                             </form>
                                         </div>
                                     </div>

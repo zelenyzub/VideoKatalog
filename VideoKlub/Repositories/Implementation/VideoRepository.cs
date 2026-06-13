@@ -62,5 +62,50 @@ namespace VideoKlub.Repositories.Implementation
                 .Include(v => v.Category)
                 .ToListAsync();
         }
+
+        public async Task<(IEnumerable<Video> Videos, int TotalCount)> GetFilteredVideosAsync(string searchQuery, int? categoryId, string statusFilter, int pageNumber, int pageSize)
+        {
+            if (pageNumber < 1)
+            {
+                pageNumber = 1;
+            }
+
+            var query = _context.Videos
+                .Include(v => v.Category)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                query = query.Where(v => v.Title.Contains(searchQuery) || v.Description.Contains(searchQuery));
+            }
+
+            if (categoryId.HasValue && categoryId.Value > 0)
+            {
+                query = query.Where(v => v.CategoryId == categoryId.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(statusFilter))
+            {
+                if (statusFilter.Equals("active", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(v => v.IsActive);
+                }
+                else if (statusFilter.Equals("inactive", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(v => !v.IsActive);
+                }
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var videos = await query
+                .OrderByDescending(v => v.IsActive)
+                .ThenBy(v => v.Title)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (videos, totalCount);
+        }
     }
 }
