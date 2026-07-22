@@ -152,7 +152,7 @@ namespace VideoKlub.Controllers
                 video.IsFavorite = favoriteIds.Contains(video.Id);
             }
         }
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> Details(int id)
         {
             var video = await _videoRepository.GetByIdWithCategoryAsync(id);

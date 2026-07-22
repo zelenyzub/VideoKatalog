@@ -160,6 +160,10 @@
                                     </div>
                                 </div>
                             </div>
+                            @if (User.Identity == null || !User.Identity.IsAuthenticated)
+                            {
+                                <a asp-controller="Account" asp-action="Login" class="btn btn-primary btn-sm">Prijava</a>
+                            }
                             @if(User.Identity != null && User.Identity.IsAuthenticated)
                             {
                                 <div class="d-flex align-items-stretch">

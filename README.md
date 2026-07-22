@@ -5,7 +5,7 @@
 
 ## Povla?enje projekta sa GitHub-a
 
-U terminalu izvršiti:
+U terminalu izvrï¿½iti:
 
 ```bash
 git clone https://github.com/USERNAME/REPO_NAME.git
@@ -18,7 +18,7 @@ cd VideoKatalog
 
 ## Provera NuGet paketa i putanja do baze
 
-Pre nego što pokreneš projekat, proveri da li su instalirani svi potrebni NuGet paketi:
+Pre nego ï¿½to pokreneï¿½ projekat, proveri da li su instalirani svi potrebni NuGet paketi:
 
 ```xml
 <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.23" />
@@ -42,7 +42,7 @@ Proveriti da je **connection string** u `appsettings.json` ispravan, npr:
 }
 ```
 
-> Ako koristiš SQL Server sa drugim imenom instance, prilagodi `Server=` deo.
+> Ako koristiï¿½ SQL Server sa drugim imenom instance, prilagodi `Server=` deo.
 
 ---
 
@@ -62,7 +62,7 @@ Ovim se:
 
 ---
 
-## Podešavanje baze podataka (SQL Server)
+## Podeï¿½avanje baze podataka (SQL Server)
 
 Aplikacija koristi bazu podataka `VideoKatalogDb`.
 
@@ -72,20 +72,21 @@ U **SQL Server Management Studio (SSMS)**:
 
 1. Povezati se na SQL Server instancu
 2. Otvoriti skriptu `VideoKatalogDb.sql`
-3. Izvršiti skriptu da se kreiraju i popune nužne tabele
+3. Izvrï¿½iti skriptu da se kreiraju i popune nuï¿½ne tabele
 
 ---
 
 ## Automatski kreirani korisnici
 
-Prilikom **prvog pokretanja aplikacije**, generišu se:
+Prilikom **prvog pokretanja aplikacije**, generiï¿½u se:
 
 | Rola  | Email            | Password  |
 | ----- | -----------------| --------- |
 | Admin | [admin@gmail.com]| Admin123! |
+| Moderator | [moderator@gmail.com]| Moderator123! |
 | User  | [user@gmail.com] | User123!  |
 
-> Služe za testiranje i prijavljivanje u aplikaciju.
+> Sluï¿½e za testiranje i prijavljivanje u aplikaciju.
 
 ---
 
